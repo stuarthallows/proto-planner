@@ -1,4 +1,5 @@
 using HumanResources.Endpoints;
+using Sales.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapUserEndpoints();
+app.MapOrderEndpoints();
 
 app.MapDefaultEndpoints();
 

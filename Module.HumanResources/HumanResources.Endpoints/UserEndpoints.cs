@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace HumanResources.Endpoints;
@@ -10,25 +11,32 @@ public static class UserEndpoints
     
     public static void MapUserEndpoints(this IEndpointRouteBuilder routes)
     {
-        string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
+        // POST endpoint to add a user, passing email address, and first and last names
+        routes.MapPost("/hr-users", async (/*User user, IUserService userService*/) =>
+        {
+            // var result = await userService.AddUserAsync(user);
+            // return result;
 
-        routes.MapGet("/hr-weatherforecast", () =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                        new WeatherForecast
-                        (
-                            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                            Random.Shared.Next(-20, 55),
-                            summaries[Random.Shared.Next(summaries.Length)]
-                        ))
-                    .ToArray();
-                return forecast;
-            })
-        .WithName("GetHRWeatherForecast");
+            await Task.Delay(1000);
+            return TypedResults.Created();
+        });
+
+        routes.MapPut("/hr-users", async (/*User user, IUserService userService*/) =>
+        {
+            // var result = await userService.AddUserAsync(user);
+            // return result;
+
+            await Task.Delay(1000);
+            return TypedResults.Ok();
+        });
+        
+        routes.MapDelete("/hr-users", async (Guid userId) =>
+        {
+            // var result = await userService.AddUserAsync(user);
+            // return result;
+
+            await Task.Delay(1000);
+            return TypedResults.NoContent();
+        });
     }
-}
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
