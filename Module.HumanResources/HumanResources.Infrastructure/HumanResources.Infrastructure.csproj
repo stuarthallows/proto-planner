@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\HumanResources.Application\HumanResources.Application.csproj" />
+      <ProjectReference Include="..\HumanResources.Persistence\HumanResources.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>

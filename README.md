@@ -5,6 +5,12 @@ It should be possible to treat each module as a separate application.
 
 Defining the modules is difficult and important.
 
+## Projects
+### Application
+- Use cases
+
+### 
+
 When defining modules consider
 - how the modules communicate
 - how will data be shared
