@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Module.HumanResources\HumanResources.Application\HumanResources.Application.csproj" />
+    <ProjectReference Include="..\Module.Sales\Sales.Application\Sales.Application.csproj" />
     <ProjectReference Include="..\ProtoPlanner.ServiceDefaults\ProtoPlanner.ServiceDefaults.csproj" />
   </ItemGroup>
 
