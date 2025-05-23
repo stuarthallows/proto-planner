@@ -21,3 +21,5 @@ How to structure the code within a module;
 - Layered architecture
 - Vertical slices
 
+Next:
+https://www.youtube.com/watch?v=m9pgd8GhmGk&list=PLYpjLpq5ZDGvOGMF2tIHEkPKf7_5tXwr4&index=6
