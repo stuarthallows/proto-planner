@@ -1,0 +1,47 @@
+﻿@page "/orders"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject OrdersApiClient OrdersApi
+
+<PageTitle>Orders</PageTitle>
+
+<h1>Orders</h1>
+
+<p>This component demonstrates showing data loaded from a backend API service.</p>
+
+@if (orders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th aria-label="Number of orders">Count</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.Date.ToShortDateString()</td>
+                    <td>@order.Count</td>
+                    <td>@order.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Order[]? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrdersApi.GetOrdersAsync();
+    }
+}

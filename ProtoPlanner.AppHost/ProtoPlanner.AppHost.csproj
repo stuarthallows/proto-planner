@@ -11,7 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProtoPlanner.ApiService\ProtoPlanner.ApiService.csproj" />
+    <ProjectReference Include="..\Module.HumanResources\HumanResources.Endpoints\HumanResources.Endpoints.csproj" />
+    <ProjectReference Include="..\Module.Sales\Sales.Endpoints\Sales.Endpoints.csproj" />
     <ProjectReference Include="..\ProtoPlanner.Web\ProtoPlanner.Web.csproj" />
   </ItemGroup>
 

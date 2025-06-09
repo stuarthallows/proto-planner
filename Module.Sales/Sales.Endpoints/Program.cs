@@ -1,3 +1,5 @@
+using Sales.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service defaults & Aspire client integrations.
@@ -20,5 +22,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapDefaultEndpoints();
+app.MapOrderEndpoints();
 
 app.Run();
