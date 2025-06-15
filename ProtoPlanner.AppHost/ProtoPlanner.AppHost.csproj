@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Module.HumanResources\HumanResources.Endpoints\HumanResources.Endpoints.csproj" />
+    <ProjectReference Include="..\Module.Inventory.ApiService\Module.Inventory.ApiService.csproj" />
     <ProjectReference Include="..\Module.Sales\Sales.Endpoints\Sales.Endpoints.csproj" />
     <ProjectReference Include="..\ProtoPlanner.Web\ProtoPlanner.Web.csproj" />
   </ItemGroup>
