@@ -1,4 +1,5 @@
 using HumanResources.Endpoints;
+using HumanResources.Endpoints.Features.Users;
 using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapDefaultEndpoints();
-app.MapUserEndpoints();
+
+app.MapGroup("api/users")
+    .MapUserEndpoints()
+    .MapGetUsers();
 
 app.Run();
