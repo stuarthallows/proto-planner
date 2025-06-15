@@ -1,4 +1,5 @@
 using HumanResources.Endpoints;
+using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,18 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApiDocument(options => {
+    options.PostProcess = document =>
+    {
+        document.Info = new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "Human Resources API",
+            Description = "An ASP.NET Core Web API for managing human resources operations"
+        };
+    };
+});
 
 var app = builder.Build();
 
@@ -18,7 +29,8 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.MapDefaultEndpoints();
