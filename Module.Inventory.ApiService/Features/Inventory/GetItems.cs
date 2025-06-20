@@ -1,24 +1,37 @@
-﻿using Module.Inventory.ApiService.Endpoints;
+﻿using FastEndpoints;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public static class GetItems
+public class GetItemsResponse
 {
-    public record Response(Guid Id, string Name, int Quantity);
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
 
-    public sealed class Endpoint : IEndpoint
+public class GetItemsEndpoint : EndpointWithoutRequest<List<GetItemsResponse>>
+{
+    public override void Configure()
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
+        Get("");
+        Group<InventoryGroup>();
+        Summary(s =>
         {
-            app.MapGet("api/inventory", Handler).WithTags("Inventory");
-        }
+            s.Description = "Retrieve all inventory items.";
+            s.Summary = "Get all inventory items.";
+        });
     }
 
-    public static async Task<IResult> Handler(CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        await Task.Delay(1000, cancellationToken);
-
-        return Results.Ok(Inventory.Instance.Select(item => new Response(item.Id, item.Name, item.Quantity)));
+        await Task.Delay(1000, ct);
+        var items = Inventory.Instance.Select(item => new GetItemsResponse
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Quantity = item.Quantity
+        }).ToList();
+        await SendAsync(items, cancellation: ct);
     }
 }
 

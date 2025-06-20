@@ -1,42 +1,33 @@
-using Module.Inventory.ApiService.Endpoints;
-using NSwag;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddProblemDetails();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument(options => {
-    options.PostProcess = document =>
+builder.Services
+    .AddFastEndpoints()
+    .SwaggerDocument(o =>
     {
-        document.Info = new OpenApiInfo
+        o.DocumentSettings = s =>
         {
-            Version = "v1",
-            Title = "Inventory API",
-            Description = "An ASP.NET Core Web API for managing inventory operations"
+            s.Title = "Inventory API";
+            s.Description = "An ASP.NET Core Web API for managing inventory operations";
+            s.Version = "v1";
         };
-    };
-});
-
-builder.Services.AddEndpoints();
+    });
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.UseFastEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseOpenApi();
-    app.UseSwaggerUi();
+    app.UseSwaggerGen();
 }
 
 app.MapDefaultEndpoints();
-
-// app.MapGroup("api/inventory");
-    // .WithGroupName("Inventory Group API")
-app.MapEndpoints();
-
 
 app.Run();

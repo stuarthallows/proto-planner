@@ -1,34 +1,46 @@
-﻿using Module.Inventory.ApiService.Endpoints;
+﻿using FastEndpoints;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public static class AddItem
+public class AddItemRequest
 {
-    public record Request(Guid Id, string Name, int Quantity);
-    public record Response(Guid Id, string Name, int Quantity);
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
 
-    public sealed class Endpoint : IEndpoint
+public class AddItemResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
+
+public class AddItemEndpoint : Endpoint<AddItemRequest, AddItemResponse>
+{
+    public override void Configure()
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
-        {
-            app.MapPost("api/inventory", Handler).WithTags("Inventory");
-        }
+        Post("");
+        Group<InventoryGroup>();
+        Summary(s =>{
+            s.Summary = "Add a new inventory item.";
+        });
     }
 
-    public static async Task<IResult> Handler(Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(AddItemRequest req, CancellationToken ct)
     {
-        await Task.Delay(1000, cancellationToken);
+        await Task.Delay(1000, ct);
 
         var item = new Item
         {
-            Id = request.Id,
-            Name = request.Name,
-            Quantity = request.Quantity
+            Id = req.Id,
+            Name = req.Name,
+            Quantity = req.Quantity
         };
 
         Inventory.Instance.Add(item);
 
-        var response = new Response(item.Id, item.Name, item.Quantity);
-        return Results.Created($"api/inventory/{response.Id}", response);
+        var response = new AddItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
+        await SendAsync(response, 201, cancellation: ct);
     }
 }

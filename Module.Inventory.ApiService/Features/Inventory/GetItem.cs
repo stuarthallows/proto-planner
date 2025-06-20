@@ -1,24 +1,38 @@
-﻿using Module.Inventory.ApiService.Endpoints;
+﻿using FastEndpoints;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public static class GetItem
+public class GetItemResponse
 {
-    public record Response(Guid Id, string Name, int Quantity);
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
 
-    public sealed class Endpoint : IEndpoint
+public class GetItemEndpoint : EndpointWithoutRequest<GetItemResponse>
+{
+    public override void Configure()
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
+        Get("items/{id:guid}");
+        Group<InventoryGroup>();
+        Summary(s =>
         {
-            app.MapGet("api/inventory/{id:guid}", Handler).WithTags("Inventory");
-        }
+            s.Summary = "Get a single inventory item by ID.";
+        });
     }
 
-    public static async Task<IResult> Handler(Guid id, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        await Task.Delay(1000, cancellationToken);
+        await Task.Delay(1000, ct);
 
-        var item = Inventory.Instance.Find(i => i.Id == id);
-        return item is not null ? Results.Ok(new Response(item.Id, item.Name, item.Quantity)) : Results.NotFound();
+        var itemId = Route<Guid>("id");
+        var item = Inventory.Instance.Find(i => i.Id == itemId);
+        if (item is null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+        var response = new GetItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
+        await SendAsync(response, cancellation: ct);
     }
 }

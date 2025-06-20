@@ -1,33 +1,45 @@
-﻿using Module.Inventory.ApiService.Endpoints;
+﻿using FastEndpoints;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public static class UpdateItem
+public class UpdateItemRequest
 {
-    public record Request(string Name, int Quantity);
-    public record Response(Guid Id, string Name, int Quantity);
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
 
-    public sealed class Endpoint : IEndpoint
+public class UpdateItemResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int Quantity { get; set; }
+}
+
+public class UpdateItemEndpoint : Endpoint<UpdateItemRequest, UpdateItemResponse>
+{
+    public override void Configure()
     {
-        public void MapEndpoint(IEndpointRouteBuilder app)
+        Put("{id:guid}");
+        Group<InventoryGroup>();
+        Summary(s =>
         {
-            app.MapPut("api/inventory/{id:guid}", Handler).WithTags("Inventory");
-        }
+            s.Summary = "Update an inventory item.";
+        });
     }
 
-    public static async Task<IResult> Handler(Guid id, Request request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(UpdateItemRequest req, CancellationToken ct)
     {
-        await Task.Delay(1000, cancellationToken);
-
-        var item = Inventory.Instance.Find(i => i.Id == id);
+        await Task.Delay(1000, ct);
+        var item = Inventory.Instance.Find(i => i.Id == req.Id);
         if (item is null)
         {
-            return Results.NotFound();
+            await SendNotFoundAsync(ct);
+            return;
         }
-
-        item.Name = request.Name;
-        item.Quantity = request.Quantity;
-
-        return Results.Ok(new Response(item.Id, item.Name, item.Quantity));
+        item.Name = req.Name;
+        item.Quantity = req.Quantity;
+        var response = new UpdateItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
+        await SendAsync(response, cancellation: ct);
     }
 }
