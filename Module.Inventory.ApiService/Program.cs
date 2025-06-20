@@ -1,4 +1,4 @@
-using Module.Inventory.ApiService.Features.Inventory;
+using Module.Inventory.ApiService.Endpoints;
 using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +20,7 @@ builder.Services.AddOpenApiDocument(options => {
     };
 });
 
-builder.Services.AddScoped<GetInventoryHandler>();
-builder.Services.AddScoped<GetInventoryItemHandler>();
-builder.Services.AddScoped<AddInventoryItemHandler>();
-builder.Services.AddScoped<UpdateInventoryItemHandler>();
+builder.Services.AddEndpoints();
 
 var app = builder.Build();
 
@@ -37,8 +34,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapDefaultEndpoints();
 
-app.MapGroup("api/inventory")
+// app.MapGroup("api/inventory");
     // .WithGroupName("Inventory Group API")
-    .MapInventoryEndpoints();
+app.MapEndpoints();
+
 
 app.Run();
