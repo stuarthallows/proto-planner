@@ -1,4 +1,4 @@
-﻿namespace Module.Inventory.ApiService;
+﻿namespace Module.Inventory.ApiService.Features.Inventory;
 
 public class GetInventoryHandler
 {

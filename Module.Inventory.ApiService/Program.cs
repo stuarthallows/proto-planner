@@ -1,4 +1,4 @@
-using Module.Inventory.ApiService;
+using Module.Inventory.ApiService.Features.Inventory;
 using NSwag;
 
 var builder = WebApplication.CreateBuilder(args);
