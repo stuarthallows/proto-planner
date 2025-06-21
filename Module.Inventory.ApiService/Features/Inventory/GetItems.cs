@@ -9,10 +9,24 @@ public class GetItemsResponse
     public int Quantity { get; set; }
 }
 
-public class GetItemsEndpoint : EndpointWithoutRequest<List<GetItemsResponse>>
+public class GetItemsMapper : ResponseMapper<GetItemsResponse, Item>
+{
+    public override GetItemsResponse FromEntity(Item entity)
+    {
+        return new GetItemsResponse
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Quantity = entity.Quantity
+        };
+    }
+}
+
+public class GetItemsEndpoint(ILogger<GetItemEndpoint> logger) : EndpointWithoutRequest<List<GetItemsResponse>, GetItemsMapper>
 {
     public override void Configure()
     {
+        AllowAnonymous();
         Get(string.Empty);
         Group<InventoryGroup>();
         Summary(s =>
@@ -25,13 +39,14 @@ public class GetItemsEndpoint : EndpointWithoutRequest<List<GetItemsResponse>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         await Task.Delay(1000, ct);
-        var items = Inventory.Instance.Select(item => new GetItemsResponse
-        {
-            Id = item.Id,
-            Name = item.Name,
-            Quantity = item.Quantity
-        }).ToList();
-        await SendAsync(items, cancellation: ct);
+
+        var items = Inventory.Instance;
+
+        logger.LogInformation("Retrieved {Count} items from inventory.", items.Count);
+
+        var responses = items.Select(Map.FromEntity).ToList();
+
+        await SendAsync(responses, cancellation: ct);
     }
 }
 
