@@ -13,12 +13,12 @@ public class GetItemsEndpoint : EndpointWithoutRequest<List<GetItemsResponse>>
 {
     public override void Configure()
     {
-        Get("");
+        Get(string.Empty);
         Group<InventoryGroup>();
         Summary(s =>
         {
-            s.Description = "Retrieve all inventory items.";
             s.Summary = "Get all inventory items.";
+            s.Description = "Retrieve all inventory items.";
         });
     }
 

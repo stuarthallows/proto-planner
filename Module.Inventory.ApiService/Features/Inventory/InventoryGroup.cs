@@ -6,7 +6,7 @@ public class InventoryGroup : Group
 {
     public InventoryGroup()
     {
-        Configure("api/inventory", ep => 
+        Configure("inventory", ep => 
         {
             ep.Description(builder => builder
               .WithTags("Inventory")

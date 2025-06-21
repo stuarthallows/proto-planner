@@ -1,30 +1,43 @@
 ﻿using FastEndpoints;
+using FluentValidation;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public class AddItemRequest
+public class AddItemEndpoint : Endpoint<AddItemEndpoint.AddItemRequest, AddItemEndpoint.AddItemResponse>
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public int Quantity { get; set; }
-}
+    public class AddItemRequest
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
 
-public class AddItemResponse
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public int Quantity { get; set; }
-}
+    public class AddItemResponse
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
 
-public class AddItemEndpoint : Endpoint<AddItemRequest, AddItemResponse>
-{
+    public class AddItemRequestValidator : Validator<AddItemRequest>
+    {
+        public AddItemRequestValidator()
+        {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required.");
+            RuleFor(x => x.Quantity).GreaterThanOrEqualTo(0).WithMessage("Quantity must be zero or greater.");
+        }
+    }
+
     public override void Configure()
     {
-        Post("");
+        Post(string.Empty);
         Group<InventoryGroup>();
-        Summary(s =>{
+        Summary(s =>
+        {
             s.Summary = "Add a new inventory item.";
         });
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(AddItemRequest req, CancellationToken ct)

@@ -21,7 +21,7 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 app.UseExceptionHandler();
-app.UseFastEndpoints();
+app.UseFastEndpoints(config => config.Endpoints.RoutePrefix = "api");
 
 if (app.Environment.IsDevelopment())
 {
