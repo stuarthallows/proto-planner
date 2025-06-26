@@ -91,7 +91,6 @@ StyleCopReport.xml
 *.tmp
 *.tmp_proj
 *_wpftmp.csproj
-*.log
 *.tlog
 *.vspscc
 *.vssscc
@@ -303,10 +302,6 @@ node_modules/
 *.dsw
 *.dsp
 
-# Visual Studio 6 technical files
-*.ncb
-*.aps
-
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts
 **/*.DesktopClient/GeneratedArtifacts
@@ -401,3 +396,27 @@ FodyWeavers.xsd
 
 # macOS
 *.DS_Store
+
+
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.idea
+.DS_Store
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

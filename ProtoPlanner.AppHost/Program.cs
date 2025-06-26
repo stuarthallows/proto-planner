@@ -2,7 +2,7 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var inventoryService = builder.AddProject<Module_Inventory_ApiService>("inventory-service")
+var inventoryService = builder.AddProject<Module_Inventory_ApiService>("inventoryservice")
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
     {
@@ -23,7 +23,7 @@ var inventoryService = builder.AddProject<Module_Inventory_ApiService>("inventor
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-var hrService = builder.AddProject<HumanResources_Endpoints>("hr-service")
+var hrService = builder.AddProject<HumanResources_Endpoints>("hrservice")
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
     {
@@ -44,7 +44,7 @@ var hrService = builder.AddProject<HumanResources_Endpoints>("hr-service")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-var salesService = builder.AddProject<Sales_Endpoints>("sales-service")
+var salesService = builder.AddProject<Sales_Endpoints>("salesservice")
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
     {
@@ -65,14 +65,17 @@ var salesService = builder.AddProject<Sales_Endpoints>("sales-service")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-builder.AddProject<ProtoPlanner_Web>("webfrontend")
-    .WithExternalHttpEndpoints()
-    .WithHttpHealthCheck("/health")
-    .WithReference(inventoryService)
-    .WaitFor(inventoryService)
-    .WithReference(hrService)
-    .WaitFor(hrService)
+builder.AddNpmApp("webapp", "../AspireJavaScript.Vite")
+    // .WithReference(inventoryService)
+    // .WaitFor(inventoryService)
+    // .WithReference(hrService)
+    // .WaitFor(hrService)
     .WithReference(salesService)
-    .WaitFor(salesService);
+    .WaitFor(salesService)
+    .WithEnvironment("BROWSER", "none")
+    .WithHttpEndpoint(env: "VITE_PORT")
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile()
+    .WithHttpHealthCheck("/health");
 
 builder.Build().Run();
