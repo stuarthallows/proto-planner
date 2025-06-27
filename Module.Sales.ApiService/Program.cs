@@ -1,12 +1,10 @@
+using Module.Sales.ApiService;
 using NSwag;
-using Sales.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
-// Add services to the container.
 builder.Services.AddProblemDetails();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -24,7 +22,6 @@ builder.Services.AddOpenApiDocument(options => {
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
@@ -38,9 +35,9 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("weatherforecast", () =>
+app.MapGet("/weatherforecast", () =>
     {
-        var forecast =  Enumerable.Range(1, 5).Select(index =>
+        var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast
                 (
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -50,7 +47,7 @@ app.MapGet("weatherforecast", () =>
             .ToArray();
         return forecast;
     })
-    .WithName("GetWeatherForecast") ;
+    .WithName("GetWeatherForecast");
 
 app.MapDefaultEndpoints();
 app.MapOrderEndpoints();

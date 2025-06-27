@@ -23,28 +23,7 @@ var inventoryService = builder.AddProject<Module_Inventory_ApiService>("inventor
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-var hrService = builder.AddProject<HumanResources_Endpoints>("hrservice")
-    .WithHttpHealthCheck("/health")
-    .WithUrlForEndpoint("http", url =>
-    {
-        url.DisplayText = "Swagger";
-        url.Url = "/swagger";
-        url.DisplayLocation = UrlDisplayLocation.DetailsOnly;
-    })
-    .WithUrlForEndpoint("https", url =>
-    {
-        url.DisplayText = "Swagger";
-        url.Url = "/swagger";
-        url.DisplayLocation = UrlDisplayLocation.SummaryAndDetails;
-    })
-    .WithUrlForEndpoint("https", ep => new ResourceUrlAnnotation
-    {
-        Url = "/health",
-        DisplayText = "Health",
-        DisplayLocation = UrlDisplayLocation.DetailsOnly
-    });
-
-var salesService = builder.AddProject<Sales_Endpoints>("salesservice")
+var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
     {

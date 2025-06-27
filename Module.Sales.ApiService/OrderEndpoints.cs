@@ -1,4 +1,4 @@
-﻿namespace Sales.Endpoints;
+﻿namespace Module.Sales.ApiService;
 
 public static class OrderEndpoints
 {

@@ -1,0 +1,6 @@
+@Module.Sales.ApiServcie_HostAddress = http://localhost:5083
+
+GET {{Module.Sales.ApiServcie_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
