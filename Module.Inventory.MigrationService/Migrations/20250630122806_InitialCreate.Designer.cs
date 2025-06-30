@@ -9,10 +9,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Module.Inventory.ApiService.Migrations
+namespace Module.Inventory.MigrationService.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    [Migration("20250630110856_InitialCreate")]
+    [Migration("20250630122806_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Module.Inventory.ApiService.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Module.Inventory.ApiService.Features.Inventory.Item", b =>
+            modelBuilder.Entity("Module.Inventory.ApiModel.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,20 +48,6 @@ namespace Module.Inventory.ApiService.Migrations
                         .HasDatabaseName("idx_inventory_items_name");
 
                     b.ToTable("inventory_items", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("5d1cd8f1-26cd-462d-a72f-5b8dd95e84ee"),
-                            Name = "Initial Item 1",
-                            Quantity = 10
-                        },
-                        new
-                        {
-                            Id = new Guid("0696465f-c6d4-45e5-b30b-8432dbb92fee"),
-                            Name = "Initial Item 2",
-                            Quantity = 5
-                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -3,11 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Module.Inventory.ApiModel;
-using OpenTelemetry.Trace;
 
 namespace Module.Inventory.MigrationService;
 
-public class InventoryDbInitializer(
+public class DbInitializer(
     IServiceProvider serviceProvider,
     IHostEnvironment hostEnvironment,
     IHostApplicationLifetime hostApplicationLifetime) : BackgroundService
@@ -24,7 +23,7 @@ public class InventoryDbInitializer(
             var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
 
             await EnsureDatabaseAsync(dbContext, cancellationToken);
-            //await RunMigrationAsync(dbContext, cancellationToken);
+            await RunMigrationAsync(dbContext, cancellationToken);
             await SeedDataAsync(dbContext, cancellationToken);
         }
         catch (Exception ex)
@@ -56,6 +55,13 @@ public class InventoryDbInitializer(
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
+            var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(cancellationToken);
+
+            if (!pendingMigrations.Any())
+            {
+                return;
+            }
+        
             await dbContext.Database.MigrateAsync(cancellationToken);
         });
     }
