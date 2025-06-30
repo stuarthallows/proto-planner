@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
@@ -9,7 +10,7 @@ public class GetItemResponse
     public int Quantity { get; set; }
 }
 
-public class GetItemEndpoint : EndpointWithoutRequest<GetItemResponse>
+public class GetItemEndpoint(IInventoryRepository repository) : EndpointWithoutRequest<GetItemResponse>
 {
     public override void Configure()
     {
@@ -23,10 +24,8 @@ public class GetItemEndpoint : EndpointWithoutRequest<GetItemResponse>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await Task.Delay(1000, ct);
-
         var itemId = Route<Guid>("id");
-        var item = Inventory.Instance.Find(i => i.Id == itemId);
+        var item = await repository.GetItemByIdAsync(itemId, ct);
         if (item is null)
         {
             await SendNotFoundAsync(ct);

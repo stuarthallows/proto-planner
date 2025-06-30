@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
@@ -22,7 +23,7 @@ public class GetItemsMapper : ResponseMapper<GetItemsResponse, Item>
     }
 }
 
-public class GetItemsEndpoint(ILogger<GetItemEndpoint> logger) : EndpointWithoutRequest<List<GetItemsResponse>, GetItemsMapper>
+public class GetItemsEndpoint(IInventoryRepository repository, ILogger<GetItemsEndpoint> logger) : EndpointWithoutRequest<List<GetItemsResponse>, GetItemsMapper>
 {
     public override void Configure()
     {
@@ -38,9 +39,7 @@ public class GetItemsEndpoint(ILogger<GetItemEndpoint> logger) : EndpointWithout
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await Task.Delay(1000, ct);
-
-        var items = Inventory.Instance;
+        var items = await repository.GetAllItemsAsync(ct);
 
         logger.LogInformation("Retrieved {Count} items from inventory.", items.Count);
 

@@ -1,8 +1,19 @@
 using Projects;
+using Aspire.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+var postgres = builder.AddPostgres("postgres")
+    .WithDataVolume();
+
+var inventoryDb = postgres.AddDatabase("inventory");
+
+var inventoryMigrationService = builder.AddProject<Module_Inventory_MigrationService>("inventorymigration")
+    .WithReference(inventoryDb);
+
 var inventoryService = builder.AddProject<Module_Inventory_ApiService>("inventoryservice")
+    .WithReference(inventoryDb)
+    .WaitFor(inventoryMigrationService)
     .WithHttpHealthCheck("/health")
     .WithUrlForEndpoint("http", url =>
     {

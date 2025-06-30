@@ -1,9 +1,13 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Module.Inventory.ApiService.Data;
+using Module.Inventory.ApiService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.AddNpgsqlDbContext<InventoryDbContext>("inventory");
 
 builder.Services
     .AddFastEndpoints()
@@ -17,6 +21,7 @@ builder.Services
         };
     });
 builder.Services.AddProblemDetails();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 var app = builder.Build();
 

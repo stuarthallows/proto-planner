@@ -12,12 +12,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Module.Inventory.ApiService\Module.Inventory.ApiService.csproj" />
+    <ProjectReference Include="..\Module.Inventory.MigrationService\Module.Inventory.MigrationService.csproj" />
     <ProjectReference Include="..\Module.Sales.ApiService\Module.Sales.ApiService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
     <PackageReference Include="Aspire.Hosting.NodeJs" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
   </ItemGroup>
 
   <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">

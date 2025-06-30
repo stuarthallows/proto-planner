@@ -6,8 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a .NET Aspire application implementing a modular monolith architecture with domain-driven design principles. The application consists of:
 
-- **ProtoPlanner.AppHost**: .NET Aspire host orchestrating all services and the frontend
-- **Module.Inventory.ApiService**: Inventory management module using FastEndpoints
+- **ProtoPlanner.AppHost**: .NET Aspire host orchestrating all services, PostgreSQL database, and the frontend
+- **Module.Inventory.ApiService**: Inventory management module using FastEndpoints with PostgreSQL persistence
+- **Module.Inventory.MigrationService**: Worker service that handles database migrations for the inventory module
 - **Module.Sales.ApiService**: Sales management module using minimal APIs  
 - **AspireJavaScript.Vite**: React TypeScript frontend built with Vite
 - **ProtoPlanner.ServiceDefaults**: Shared service configuration with OpenTelemetry, health checks, and service discovery
@@ -41,6 +42,22 @@ dotnet test
 dotnet test ProtoPlanner.Tests
 ```
 
+### Database Operations
+```bash
+# From Module.Inventory.ApiService directory (migrations are stored here)
+cd Module.Inventory.ApiService
+
+# Add new migration
+dotnet ef migrations add <MigrationName>
+
+# Remove last migration (if not applied)
+dotnet ef migrations remove
+
+# Note: Database updates are handled automatically by Module.Inventory.MigrationService
+# The InventoryDbInitializer runs before the API service to ensure database is ready
+# This follows the official .NET Aspire database migrations sample pattern
+```
+
 ### Frontend Development
 ```bash
 # From AspireJavaScript.Vite directory
@@ -66,6 +83,13 @@ npm run lint
 - Each endpoint is a separate class (GetItems, AddItem, UpdateItem, etc.)
 - Response mappers handle entity-to-DTO conversion
 - Groups endpoints under `/api/inventory` prefix
+- **Database**: PostgreSQL with Entity Framework Core
+- **DbContext**: `InventoryDbContext` with `inventory_items` table (id UUID, name VARCHAR, quantity INTEGER)
+- **Repository Pattern**: `IInventoryRepository` handles all database operations with EF Core
+- **Migrations**: EF Core migrations handle database schema creation and updates
+- **Migration Service**: Dedicated worker service (`Module.Inventory.MigrationService`) with `InventoryDbInitializer` following Aspire patterns
+- **Startup Order**: Migration service runs before API service to ensure database is ready
+- **Pattern**: Follows the official .NET Aspire database migrations sample structure
 
 ### Sales Module (Minimal APIs)
 - Uses traditional minimal API approach
@@ -79,6 +103,11 @@ npm run lint
 - **OpenTelemetry**: Comprehensive observability with metrics, traces, and logging
 - **Service Discovery**: Services can communicate using logical names
 - **Resilience**: HTTP clients have standard resilience patterns enabled by default
+- **Database Integration**: PostgreSQL managed by Aspire with automatic connection string configuration
+- **Entity Framework Core**: Code-first approach with migrations for database schema management
+- **Repository Pattern**: Clean separation between business logic and data access using EF Core
+- **Migration Services**: Dedicated worker services handle database migrations following Aspire patterns
+- **Service Dependencies**: API services wait for migration services to complete before starting
 
 ## Frontend Integration
 

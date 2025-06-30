@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
@@ -16,7 +17,7 @@ public class UpdateItemResponse
     public int Quantity { get; set; }
 }
 
-public class UpdateItemEndpoint : Endpoint<UpdateItemRequest, UpdateItemResponse>
+public class UpdateItemEndpoint(IInventoryRepository repository) : Endpoint<UpdateItemRequest, UpdateItemResponse>
 {
     public override void Configure()
     {
@@ -30,16 +31,20 @@ public class UpdateItemEndpoint : Endpoint<UpdateItemRequest, UpdateItemResponse
 
     public override async Task HandleAsync(UpdateItemRequest req, CancellationToken ct)
     {
-        await Task.Delay(1000, ct);
-        var item = Inventory.Instance.Find(i => i.Id == req.Id);
-        if (item is null)
+        var item = new Item
+        {
+            Id = req.Id,
+            Name = req.Name,
+            Quantity = req.Quantity
+        };
+
+        var updatedItem = await repository.UpdateItemAsync(req.Id, item, ct);
+        if (updatedItem is null)
         {
             await SendNotFoundAsync(ct);
             return;
         }
-        item.Name = req.Name;
-        item.Quantity = req.Quantity;
-        var response = new UpdateItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
+        var response = new UpdateItemResponse { Id = updatedItem.Id, Name = updatedItem.Name, Quantity = updatedItem.Quantity };
         await SendAsync(response, cancellation: ct);
     }
 }

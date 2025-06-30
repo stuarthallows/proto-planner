@@ -1,9 +1,10 @@
 ﻿using FastEndpoints;
 using FluentValidation;
+using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public class AddItemEndpoint : Endpoint<AddItemEndpoint.AddItemRequest, AddItemEndpoint.AddItemResponse>
+public class AddItemEndpoint(IInventoryRepository repository) : Endpoint<AddItemEndpoint.AddItemRequest, AddItemEndpoint.AddItemResponse>
 {
     public class AddItemRequest
     {
@@ -42,8 +43,6 @@ public class AddItemEndpoint : Endpoint<AddItemEndpoint.AddItemRequest, AddItemE
 
     public override async Task HandleAsync(AddItemRequest req, CancellationToken ct)
     {
-        await Task.Delay(1000, ct);
-
         var item = new Item
         {
             Id = req.Id,
@@ -51,9 +50,9 @@ public class AddItemEndpoint : Endpoint<AddItemEndpoint.AddItemRequest, AddItemE
             Quantity = req.Quantity
         };
 
-        Inventory.Instance.Add(item);
+        var addedItem = await repository.AddItemAsync(item, ct);
 
-        var response = new AddItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
+        var response = new AddItemResponse { Id = addedItem.Id, Name = addedItem.Name, Quantity = addedItem.Quantity };
         await SendAsync(response, 201, cancellation: ct);
     }
 }
