@@ -1,6 +1,6 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using Module.Inventory.ApiService.Data;
+using Module.Inventory.ApiModel;
 using Module.Inventory.ApiService.Services;
 
 var builder = WebApplication.CreateBuilder(args);

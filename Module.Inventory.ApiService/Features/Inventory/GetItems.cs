@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Module.Inventory.ApiModel;
 using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;

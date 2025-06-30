@@ -16,6 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProtoPlanner.ServiceDefaults\ProtoPlanner.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\Module.Inventory.ApiService\Module.Inventory.ApiService.csproj" />
+    <ProjectReference Include="..\Module.Inventory.ApiModel\Module.Inventory.ApiModel.csproj" />
   </ItemGroup>
 </Project>

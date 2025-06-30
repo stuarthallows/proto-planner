@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Module.Inventory.ApiService.Data;
-using Module.Inventory.ApiService.Features.Inventory;
+using Module.Inventory.ApiModel;
 
 namespace Module.Inventory.ApiService.Services;
 

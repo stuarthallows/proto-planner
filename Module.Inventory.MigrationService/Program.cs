@@ -1,4 +1,4 @@
-using Module.Inventory.ApiService.Data;
+using Module.Inventory.ApiModel;
 using Module.Inventory.MigrationService;
 
 var builder = Host.CreateApplicationBuilder(args);

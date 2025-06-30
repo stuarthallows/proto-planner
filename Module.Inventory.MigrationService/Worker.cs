@@ -2,8 +2,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Module.Inventory.ApiService.Data;
-using Module.Inventory.ApiService.Features.Inventory;
+using Module.Inventory.ApiModel;
 using OpenTelemetry.Trace;
 
 namespace Module.Inventory.MigrationService;

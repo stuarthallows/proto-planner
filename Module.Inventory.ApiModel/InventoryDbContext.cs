@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Module.Inventory.ApiService.Features.Inventory;
 
-namespace Module.Inventory.ApiService.Data;
+namespace Module.Inventory.ApiModel;
 
 public class InventoryDbContext(DbContextOptions<InventoryDbContext> options) : DbContext(options)
 {
