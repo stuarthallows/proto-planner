@@ -15,7 +15,7 @@ public class DbInitializer(
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        using var activity = _activitySource.StartActivity(hostEnvironment.ApplicationName, ActivityKind.Client);
+        using var activity = _activitySource.StartActivity("Migrating database", ActivityKind.Client);
 
         try
         {
@@ -71,16 +71,24 @@ public class DbInitializer(
         // Check if there are any existing items
         var hasData = await dbContext.InventoryItems.AnyAsync(cancellationToken);
         
-        if (!hasData)
+        if (hasData)
         {
-            var seedItems = new[]
-            {
-                new Item { Id = Guid.NewGuid(), Name = "Initial Item 1", Quantity = 10 },
-                new Item { Id = Guid.NewGuid(), Name = "Initial Item 2", Quantity = 5 }
-            };
-
-            dbContext.InventoryItems.AddRange(seedItems);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            return;
         }
+
+        var seedItems = new[]
+        {
+            new Item { Id = Guid.NewGuid(), Name = "Initial Item 1", Quantity = 10 },
+            new Item { Id = Guid.NewGuid(), Name = "Initial Item 2", Quantity = 5 }
+        };
+
+        var strategy = dbContext.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+            await dbContext.InventoryItems.AddRangeAsync(seedItems, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        });
     }
 }
