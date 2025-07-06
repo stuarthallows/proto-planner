@@ -58,7 +58,7 @@ var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-builder.AddNpmApp("webapp", "../AspireJavaScript.Vite")
+builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
     // .WithReference(inventoryService)
     // .WaitFor(inventoryService)
     // .WithReference(hrService)
