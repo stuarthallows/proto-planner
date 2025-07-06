@@ -1,12 +1,15 @@
 using Projects;
-using Aspire.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres")
-    .WithDataVolume();
+// AddAzurePostgresFlexibleServer required for running on Azure.
 
-var inventoryDb = postgres.AddDatabase("inventory");
+var inventoryDb = builder
+    .AddPostgres("postgres") // Creates a server with username 'postgres' and a random password
+    .WithDataVolume()
+    .WithPgWeb()  // Adds a container based on the sosedoff/pgweb image.
+    .WithPgAdmin() // Adds a container based on the docker.io/dpage/pgadmin4 image.
+    .AddDatabase("inventory");
 
 var inventoryMigrationService = builder.AddProject<Module_Inventory_MigrationService>("inventorymigration")
     .WithReference(inventoryDb);
