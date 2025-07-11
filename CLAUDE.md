@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a .NET Aspire application implementing a modular monolith architecture with domain-driven design principles. The application consists of:
 
-- **ProtoPlanner.AppHost**: .NET Aspire host orchestrating all services, PostgreSQL database, and the frontend
+- **ProtoPlanner.AppHost**: .NET Aspire host orchestrating all services, PostgreSQL database, and the frontend web app
 - **Module.Inventory.ApiService**: Inventory management module using FastEndpoints with PostgreSQL persistence
 - **Module.Inventory.MigrationService**: Worker service that handles database migrations for the inventory module
 - **Module.Sales.ApiService**: Sales management module using minimal APIs  
-- **AspireJavaScript.Vite**: React TypeScript frontend built with Vite
+- **ProtoPlanner.Web**: React TypeScript frontend built with Vite (orchestrated by Aspire host)
 - **ProtoPlanner.ServiceDefaults**: Shared service configuration with OpenTelemetry, health checks, and service discovery
 - **ProtoPlanner.Tests**: Integration tests using Aspire testing framework
 
@@ -20,26 +20,38 @@ The modules communicate through integration events and are designed to be treate
 
 ### Running the Application
 ```bash
-# Run the entire application (all services + frontend)
+# Run the entire .NET Aspire application (all services + frontend)
 dotnet run --project ProtoPlanner.AppHost
+
+# Alternative: Run the frontend separately for development (from ProtoPlanner.Web directory)
+cd ProtoPlanner.Web
+npm run dev
 ```
 
 ### Building
 ```bash
-# Build entire solution
+# Build entire .NET solution
 dotnet build
 
 # Build specific project
 dotnet build Module.Inventory.ApiService
+
+# Build frontend (from ProtoPlanner.Web directory)
+cd ProtoPlanner.Web
+npm run build
 ```
 
 ### Testing
 ```bash
-# Run all tests
+# Run all .NET tests
 dotnet test
 
 # Run specific test project
 dotnet test ProtoPlanner.Tests
+
+# Lint frontend code (from ProtoPlanner.Web directory)
+cd ProtoPlanner.Web
+npm run lint
 ```
 
 ### Database Operations
@@ -60,8 +72,8 @@ dotnet ef migrations remove
 
 ### Frontend Development
 ```bash
-# From AspireJavaScript.Vite directory
-cd AspireJavaScript.Vite
+# From ProtoPlanner.Web directory
+cd ProtoPlanner.Web
 
 # Install dependencies
 npm install
@@ -74,6 +86,9 @@ npm run build
 
 # Lint TypeScript/React code
 npm run lint
+
+# Preview production build
+npm run preview
 ```
 
 ## Module Structure
@@ -96,6 +111,16 @@ npm run lint
 - Endpoints defined directly in Program.cs
 - Currently has weather forecast example and order endpoints
 
+### Frontend (ProtoPlanner.Web)
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite 7 with SWC for fast refresh
+- **Package Manager**: Uses pnpm (pnpm-lock.yaml present)
+- **Styling**: CSS modules with separate App.css and index.css
+- **Linting**: ESLint with TypeScript integration
+- **Models**: TypeScript interfaces in src/models/ directory
+- **Assets**: Static assets in public/ and src/assets/ directories
+- **Docker**: Includes Dockerfile and nginx configuration template
+
 ## Key Patterns
 
 - **Service Defaults**: All API services inherit common configuration through `AddServiceDefaults()`
@@ -111,4 +136,4 @@ npm run lint
 
 ## Frontend Integration
 
-The Vite React app is orchestrated by Aspire and can reference backend services. Environment variables are used for service discovery and configuration.
+The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host and can communicate with the backend services. The Aspire host automatically starts and manages the frontend alongside the backend services. The frontend includes Docker configuration for deployment and uses modern React patterns with TypeScript for type safety.
