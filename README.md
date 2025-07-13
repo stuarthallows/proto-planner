@@ -44,10 +44,10 @@ When defining microservices, consider:
 - [x] ⛁ Add database [admin link](https://learn.microsoft.com/en-us/dotnet/aspire/database/postgresql-integration?tabs=dotnet-cli#add-postgresql-pgadmin-resource)
 - [x] Distributed tracing with OpenTelemetry
 - [x] Shadcn component library
+- [x] Security code scanning
+- [x] Return mock data with Mock Service Worker
 - [ ] BE Error handling global exception handler
 - [ ] Return errors as `ProblemDetails`
-- [ ] Static code analysis
-- [ ] Security code scanning
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
 - [ ] Deployment
 - [ ] Auditing
