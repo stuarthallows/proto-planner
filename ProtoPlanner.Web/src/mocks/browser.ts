@@ -1,5 +1,4 @@
 import { setupWorker } from 'msw/browser'
-import { handlers } from './handlers'
+// import { handlers as inventoryHandlers} from './inventory-handlers'
 
-// Setup MSW worker with inventory API handlers
-export const worker = setupWorker(...handlers)
+export const worker = setupWorker()

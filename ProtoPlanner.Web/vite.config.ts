@@ -18,8 +18,8 @@ export default defineConfig(({ mode }) => {
         port: parseInt(env.VITE_PORT),
         proxy: {
             '/api': {
-                target: process.env.services__salesservice__https__0 ||
-                    process.env.services__salesservice__http__0,
+                target: process.env.services__inventoryservice__https__0 ||
+                    process.env.services__inventoryservice__http__0,
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/api/, ''),
                 secure: false,

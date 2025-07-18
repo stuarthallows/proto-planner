@@ -59,10 +59,8 @@ var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
     });
 
 builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
-    // .WithReference(inventoryService)
-    // .WaitFor(inventoryService)
-    // .WithReference(hrService)
-    // .WaitFor(hrService)
+    .WithReference(inventoryService)
+    .WaitFor(inventoryService)
     .WithReference(salesService)
     .WaitFor(salesService)
     .WithEnvironment("BROWSER", "none")

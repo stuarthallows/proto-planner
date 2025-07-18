@@ -26,7 +26,7 @@ builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 var app = builder.Build();
 
 app.UseExceptionHandler();
-app.UseFastEndpoints(config => config.Endpoints.RoutePrefix = "api");
+app.UseFastEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
