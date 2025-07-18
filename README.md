@@ -49,6 +49,7 @@ When defining microservices, consider:
 - [ ] BE Error handling global exception handler
 - [ ] Return errors as `ProblemDetails`
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
+- [ ] ShadCN MCP server
 - [ ] Deployment
 - [ ] Auditing
 - [ ] CI/CD, build and run stages

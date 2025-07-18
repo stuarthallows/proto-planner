@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import type { InventoryItem } from "../models/InventoryItem"
 
+/**
+ * Inventory list component that displays and manages inventory items
+ */
 function InventoryList() {
   const [items, setItems] = useState<Array<InventoryItem>>([])
   const [loading, setLoading] = useState(true)
