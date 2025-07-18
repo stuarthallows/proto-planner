@@ -1,3 +1,4 @@
+using Aspire.Hosting;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -58,11 +59,14 @@ var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
+var gateway = builder.AddYarp("apigateway")
+    .WithConfigFile("yarp.json")
     .WithReference(inventoryService)
-    .WaitFor(inventoryService)
-    .WithReference(salesService)
-    .WaitFor(salesService)
+    .WithReference(salesService);
+
+builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
+    //.WithReference(gateway)
+    .WaitFor(gateway)
     .WithEnvironment("BROWSER", "none")
     .WithHttpEndpoint(env: "VITE_PORT")
     .WithExternalHttpEndpoints()

@@ -1,0 +1,34 @@
+﻿{
+  "ReverseProxy": {
+    "Routes": {
+      "inventory": {
+        "ClusterId": "inventory",
+        "Match": {
+          "Path": "/api/inventory/{**catch-all}"
+        }
+      },
+      "sales": {
+        "ClusterId": "sales",
+        "Match": {
+          "Path": "/api/sales/{**catch-all}"
+        }
+      }
+    },
+    "Clusters": {
+      "inventory": {
+        "Destinations": {
+          "inventory/d1": {
+            "Address": "http://inventoryservice/"
+          }
+        }
+      },
+      "sales": {
+        "Destinations": {
+          "sales/d1": {
+            "Address": "http://sales/"
+          }
+        }
+      }
+    }
+  }
+}
