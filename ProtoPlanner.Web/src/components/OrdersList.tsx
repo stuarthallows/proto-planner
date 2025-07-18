@@ -9,6 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+/**
+ * Orders list component that displays and manages customer orders
+ */
 function OrdersList() {
   const [orders, setOrders] = useState<Array<Order>>([])
   const [loading, setLoading] = useState(true)
