@@ -14,20 +14,22 @@ public static class OrderEndpoints
 
     public static void MapOrderEndpoints(this IEndpointRouteBuilder routes)
     {
-        // GET /orders - Get all orders
-        routes.MapGet("/orders", () => Results.Ok(Orders))
+        var orderGroup = routes.MapGroup("/orders");
+
+        // GET / - Get all orders
+        orderGroup.MapGet(string.Empty, () => Results.Ok(Orders))
             .WithName("GetAllOrders");
 
-        // GET /orders/{id} - Get order by ID
-        routes.MapGet("/orders/{id:guid}", (Guid id) =>
+        // GET /{id} - Get order by ID
+        orderGroup.MapGet("{id:guid}", (Guid id) =>
             {
                 var order = Orders.FirstOrDefault(o => o.Id == id);
                 return order is not null ? Results.Ok(order) : Results.NotFound();
             })
             .WithName("GetOrderById");
 
-        // POST /orders - Create new order
-        routes.MapPost("/orders", (CreateOrderRequest request) =>
+        // POST / - Create new order
+        orderGroup.MapPost(string.Empty, (CreateOrderRequest request) =>
             {
                 var order = new Order(Guid.NewGuid(), DateOnly.FromDateTime(DateTime.UtcNow), 
                     request.Count, request.Description, request.Status ?? "Pending");
@@ -36,8 +38,8 @@ public static class OrderEndpoints
             })
             .WithName("CreateOrder");
 
-        // PUT /orders/{id} - Update existing order
-        routes.MapPut("/orders/{id:guid}", (Guid id, UpdateOrderRequest request) =>
+        // PUT /{id} - Update existing order
+        orderGroup.MapPut("{id:guid}", (Guid id, UpdateOrderRequest request) =>
             {
                 var existingOrder = Orders.FirstOrDefault(o => o.Id == id);
                 if (existingOrder is null)
@@ -57,8 +59,8 @@ public static class OrderEndpoints
             })
             .WithName("UpdateOrder");
 
-        // DELETE /orders/{id} - Delete order
-        routes.MapDelete("/orders/{id:guid}", (Guid id) =>
+        // DELETE /{id} - Delete order
+        orderGroup.MapDelete("{id:guid}", (Guid id) =>
             {
                 var order = Orders.FirstOrDefault(o => o.Id == id);
                 if (order is null)

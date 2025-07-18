@@ -76,19 +76,25 @@ dotnet ef migrations remove
 cd ProtoPlanner.Web
 
 # Install dependencies
-npm install
+pnpm install
+
+# Add new dependency
+pnpm add package-name
+
+# Add dev dependency
+pnpm add -D package-name
 
 # Run frontend in development mode
-npm run dev
+pnpm run dev
 
 # Build frontend
-npm run build
+pnpm run build
 
 # Lint TypeScript/React code
-npm run lint
+pnpm run lint
 
 # Preview production build
-npm run preview
+pnpm run preview
 ```
 
 ## Module Structure
@@ -137,3 +143,9 @@ npm run preview
 ## Frontend Integration
 
 The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host and can communicate with the backend services. The Aspire host automatically starts and manages the frontend alongside the backend services. The frontend includes Docker configuration for deployment and uses modern React patterns with TypeScript for type safety.
+
+## Code Practices
+
+- In C# prefer `string.Empty` over `""`
+- Use shadcn components where appropriate on the Web project
+
