@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Module.Inventory.ApiService\Module.Inventory.ApiService.csproj" />
     <ProjectReference Include="..\Module.Inventory.MigrationService\Module.Inventory.MigrationService.csproj" />
     <ProjectReference Include="..\Module.Sales.ApiService\Module.Sales.ApiService.csproj" />
+    <ProjectReference Include="..\ProtoPlanner.ApiGateway\ProtoPlanner.ApiGateway.csproj" />
   </ItemGroup>
 
   <ItemGroup>

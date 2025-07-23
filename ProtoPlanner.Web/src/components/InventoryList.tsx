@@ -13,7 +13,7 @@ function InventoryList() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch("api/inventory")
+      const response = await fetch("api/inventory/inventory")
       
       if (!response.ok) {
         throw new Error(`Failed to fetch inventory: ${response.status}`)

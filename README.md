@@ -46,6 +46,9 @@ When defining microservices, consider:
 - [x] Shadcn component library
 - [x] Security code scanning
 - [x] Return mock data with Mock Service Worker
+- [x] Reverse proxy to hide implementation services (YARP)
+- [ ] Full set of CRUD operations
+- [ ] Form handling including validation
 - [ ] BE Error handling global exception handler
 - [ ] Return errors as `ProblemDetails`
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
@@ -57,7 +60,6 @@ When defining microservices, consider:
 - [ ] Secret management
 - [ ] API request idempotency
 - [ ] Abstract messaging implementation with Mass Transit
-- [ ] Reverse proxy to hide implementation services (YARP)
 - [ ] Consider dapr to abstract service layer
 - [ ] Configuration for dev/staging/production
 - [ ] Alerting on abnormal system behaviour

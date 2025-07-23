@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a .NET Aspire application implementing a modular monolith architecture with domain-driven design principles. The application consists of:
 
 - **ProtoPlanner.AppHost**: .NET Aspire host orchestrating all services, PostgreSQL database, and the frontend web app
+- **ProtoPlanner.ApiGateway**: YARP-based reverse proxy that routes requests to backend modules and provides a unified API surface
 - **Module.Inventory.ApiService**: Inventory management module using FastEndpoints with PostgreSQL persistence
 - **Module.Inventory.MigrationService**: Worker service that handles database migrations for the inventory module
 - **Module.Sales.ApiService**: Sales management module using minimal APIs  
@@ -117,6 +118,15 @@ pnpm run preview
 - Endpoints defined directly in Program.cs
 - Currently has weather forecast example and order endpoints
 
+### API Gateway (ProtoPlanner.ApiGateway)
+- **Framework**: YARP (Yet Another Reverse Proxy) with .NET service discovery
+- **Purpose**: Provides unified API surface for all backend modules
+- **Routing**: Routes `/inventory/*` requests to inventory service and `/sales/*` requests to sales service
+- **Service Discovery**: Uses Aspire service discovery to resolve backend service locations
+- **Configuration**: Route configuration in appsettings.json with path prefix removal transforms
+- **Dependencies**: Waits for both inventory and sales services before starting
+- **Integration**: Frontend communicates through the gateway instead of directly with individual services
+
 ### Frontend (ProtoPlanner.Web)
 - **Framework**: React 19 with TypeScript
 - **Build Tool**: Vite 7 with SWC for fast refresh
@@ -142,10 +152,13 @@ pnpm run preview
 
 ## Frontend Integration
 
-The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host and can communicate with the backend services. The Aspire host automatically starts and manages the frontend alongside the backend services. The frontend includes Docker configuration for deployment and uses modern React patterns with TypeScript for type safety.
+The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host and communicates with backend services through the API Gateway (ProtoPlanner.ApiGateway). The Aspire host automatically starts and manages the frontend alongside the backend services. The API Gateway provides a unified entry point, routing requests to the appropriate backend modules while maintaining service isolation. The frontend includes Docker configuration for deployment and uses modern React patterns with TypeScript for type safety.
 
 ## Code Practices
 
 - In C# prefer `string.Empty` over `""`
 - Use shadcn components where appropriate on the Web project
+
+## Rules
+- Act as a highly skilled engineer that writes highly performant, elegant code that is simple and idiomatic
 

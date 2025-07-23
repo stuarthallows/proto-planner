@@ -58,11 +58,15 @@ var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
+var apiGateway = builder.AddProject<ProtoPlanner_ApiGateway>("apigateway")
     .WithReference(inventoryService)
     .WaitFor(inventoryService)
     .WithReference(salesService)
-    .WaitFor(salesService)
+    .WaitFor(salesService);
+
+builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
+    .WithReference(apiGateway)
+    .WaitFor(apiGateway)
     .WithEnvironment("BROWSER", "none")
     .WithHttpEndpoint(env: "VITE_PORT")
     .WithExternalHttpEndpoints()
