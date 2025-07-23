@@ -5,56 +5,38 @@ const mockInventoryItems: InventoryItem[] = [
   {
     id: '1',
     name: 'Office Chair Pro',
-    quantity: 25,
-    price: 299.99,
-    category: 'Furniture',
-    description: 'Ergonomic office chair with lumbar support'
+    quantity: 25
   },
   {
     id: '2',
     name: 'Standing Desk',
-    quantity: 12,
-    price: 599.99,
-    category: 'Furniture',
-    description: 'Height-adjustable standing desk'
+    quantity: 12
   },
   {
     id: '3',
     name: 'Wireless Mouse',
-    quantity: 150,
-    price: 49.99,
-    category: 'Electronics',
-    description: 'Bluetooth wireless mouse with precision tracking'
+    quantity: 150
   },
   {
     id: '4',
     name: 'Monitor 27"',
-    quantity: 30,
-    price: 349.99,
-    category: 'Electronics',
-    description: '4K LED monitor with USB-C connectivity'
+    quantity: 30
   },
   {
     id: '5',
     name: 'Notebook Set',
-    quantity: 200,
-    price: 15.99,
-    category: 'Stationery',
-    description: 'Pack of 3 premium notebooks'
+    quantity: 200
   },
   {
     id: '6',
     name: 'Coffee Mug',
-    quantity: 75,
-    price: 12.99,
-    category: 'Office Supplies',
-    description: 'Ceramic coffee mug with company logo'
+    quantity: 75
   }
 ]
 
 export const handlers = [
   // Get all inventory items
-  http.get('/api/inventory/items', () => {
+  http.get('/api/inventory/inventory', () => {
     return HttpResponse.json(mockInventoryItems)
   }),
 
@@ -71,7 +53,7 @@ export const handlers = [
   }),
 
   // Add new inventory item
-  http.post('/api/inventory/items', async ({ request }) => {
+  http.post('/api/inventory/inventory/items', async ({ request }) => {
     const newItem = await request.json() as Omit<InventoryItem, 'id'>
     const item: InventoryItem = {
       id: String(mockInventoryItems.length + 1),
@@ -82,7 +64,7 @@ export const handlers = [
   }),
 
   // Update inventory item
-  http.put('/api/inventory/items/:id', async ({ params, request }) => {
+  http.put('/api/inventory/inventory/items/:id', async ({ params, request }) => {
     const { id } = params
     const updates = await request.json() as Partial<InventoryItem>
     const itemIndex = mockInventoryItems.findIndex(item => item.id === id)
@@ -96,7 +78,7 @@ export const handlers = [
   }),
 
   // Delete inventory item
-  http.delete('/api/inventory/items/:id', ({ params }) => {
+  http.delete('/api/inventory/inventory/items/:id', ({ params }) => {
     const { id } = params
     const itemIndex = mockInventoryItems.findIndex(item => item.id === id)
     

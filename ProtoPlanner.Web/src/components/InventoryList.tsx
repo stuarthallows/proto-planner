@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react"
 import type { InventoryItem } from "../models/InventoryItem"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 /**
  * Inventory list component that displays and manages inventory items
@@ -23,7 +31,6 @@ function InventoryList() {
       setItems(itemsData)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch inventory")
-      console.error("Error fetching inventory:", err)
     } finally {
       setLoading(false)
     }
@@ -33,13 +40,6 @@ function InventoryList() {
     fetchInventoryItems()
   }, [])
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price)
-  }
-
   const getStockStatus = (quantity: number) => {
     if (quantity === 0) return { text: "Out of Stock", className: "stock-out" }
     if (quantity < 10) return { text: "Low Stock", className: "stock-low" }
@@ -48,67 +48,82 @@ function InventoryList() {
 
   if (loading) {
     return (
-      <div className="inventory-container">
-        <div className="loading">Loading inventory...</div>
+      <div className="p-6">
+        <div className="flex items-center justify-center p-8">
+          <div>Loading inventory...</div>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="inventory-container">
-        <div className="error">
-          <p>Error: {error}</p>
-          <button onClick={fetchInventoryItems}>Retry</button>
+      <div className="p-6">
+        <div className="text-center py-8">
+          <p className="text-red-600 mb-4">Error: {error}</p>
+          <button 
+            onClick={fetchInventoryItems}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
         </div>
       </div>
     )
   }
 
+  const getStockStatusBadge = (quantity: number) => {
+    if (quantity === 0) {
+      return "bg-red-100 text-red-800"
+    }
+    if (quantity < 10) {
+      return "bg-yellow-100 text-yellow-800"
+    }
+    return "bg-green-100 text-green-800"
+  }
+
   return (
-    <div className="inventory-container">
-      <header className="inventory-header">
-        <h1>📦 Inventory Management</h1>
-        <p>Total Items: {items.length}</p>
-      </header>
-      
-      <div className="inventory-grid">
-        {items.map((item) => {
-          const stockStatus = getStockStatus(item.quantity)
-          return (
-            <div key={item.id} className="inventory-card">
-              <div className="card-header">
-                <h3>{item.name}</h3>
-                <span className={`stock-badge ${stockStatus.className}`}>
-                  {stockStatus.text}
-                </span>
-              </div>
-              
-              <div className="card-content">
-                <p className="description">{item.description}</p>
-                <div className="item-details">
-                  <div className="detail-row">
-                    <span className="label">Category:</span>
-                    <span className="value">{item.category}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="label">Quantity:</span>
-                    <span className="value">{item.quantity}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="label">Price:</span>
-                    <span className="value price">{formatPrice(item.price)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">📦 Inventory</h1>
+        <p className="text-gray-600 mt-2">Total Items: {items.length}</p>
       </div>
       
-      {items.length === 0 && (
-        <div className="empty-state">
+      {items.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
           <p>No inventory items found.</p>
+        </div>
+      ) : (
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead className="text-right">Quantity</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((item) => {
+                const stockStatus = getStockStatus(item.quantity)
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-mono text-sm">
+                      {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
+                    </TableCell>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="text-right">{item.quantity}</TableCell>
+                    <TableCell>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusBadge(item.quantity)}`}>
+                        {stockStatus.text}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>
