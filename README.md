@@ -24,6 +24,26 @@ When defining microservices, consider:
 - How to handle eventual consistency
 - Treating each service as an independent application
 
+## Workflow
+- Start working on an app with a dictation session in SuperWhisperer
+- Work with Claude to turn that into a requirements document
+- Tell Claude code to create GitHub issues, issues need to be really well defined
+- Install GitHub CLI to enable Claude to interact with GitHub
+- Setup Playwright MCP server so Claude can test the code it writes
+- Setup CI to run the test suite
+- Review the PR and leave comments
+- Have Claude perform a PR review, clear the context first or use a separate terminal
+- Have Claude action the comments
+- Merge the PR
+- Clear the context
+- Consider using Git worktrees to work on multiple issues simultaneously
+
+Question: Should Claude commit the code, or should the developer?
+
+
+
+What works surprisingly well in my workflow definition is to ask Claude to self assess confidence/familiarity of the area in the planning phase and if it's below 70 (1-100 scale), it does a spike/POC and much more research before proceeding to implementing. 
+
 ## 🚀 Exploration Checklist
 
 - [x] Consider problem domain for code playground
