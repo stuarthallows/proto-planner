@@ -420,3 +420,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+hook_handler.jsonl
