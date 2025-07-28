@@ -12,7 +12,7 @@ import subprocess
 from pathlib import Path
 import re
 
-SOUNDS_ENABLED = True  # Set to False to disable sound playback
+SOUNDS_ENABLED = False  # Set to False to disable sound playback
 
 # ===== CONFIGURATION =====
 # Choose which sound set to use: "voice" (spoken words) or "beeps" (simple tones)

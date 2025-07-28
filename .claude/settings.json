@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/hook-handler.py"
+            "command": "python3 .claude/hooks/hook_handler.py"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/hook-handler.py"
+            "command": "python3 .claude/hooks/hook_handler.py"
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 .claude/hooks/hook-handler.py"
+            "command": "python3 .claude/hooks/hook_handler.py"
           }
         ]
       }

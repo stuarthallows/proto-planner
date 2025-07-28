@@ -2,6 +2,7 @@ import { createRootRoute, createRoute } from '@tanstack/react-router'
 import { RootLayout } from './components/RootLayout'
 import { HomePage } from './components/HomePage'
 import InventoryList from './components/InventoryList'
+import InventoryItemDetail from './components/InventoryItemDetail'
 import { OrdersList } from './components/OrdersList'
 
 export const rootRoute = createRootRoute({
@@ -20,6 +21,12 @@ export const inventoryRoute = createRoute({
   component: InventoryList,
 })
 
+export const inventoryItemRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/inventory/$id',
+  component: InventoryItemDetail,
+})
+
 export const ordersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/orders',
@@ -29,5 +36,6 @@ export const ordersRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   inventoryRoute,
+  inventoryItemRoute,
   ordersRoute,
 ])

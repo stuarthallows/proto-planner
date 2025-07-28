@@ -33,6 +33,7 @@ public class AddItemEndpoint(IInventoryRepository repository) : Endpoint<AddItem
 
     public override void Configure()
     {
+        AllowAnonymous();
         Post(string.Empty);
         Group<InventoryGroup>();
         Summary(s =>

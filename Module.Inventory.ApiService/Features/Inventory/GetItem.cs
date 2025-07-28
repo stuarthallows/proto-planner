@@ -15,7 +15,8 @@ public class GetItemEndpoint(IInventoryRepository repository) : EndpointWithoutR
 {
     public override void Configure()
     {
-        Get("items/{id:guid}");
+        AllowAnonymous();
+        Get("{id:guid}");
         Group<InventoryGroup>();
         Summary(s =>
         {

@@ -22,6 +22,7 @@ public class UpdateItemEndpoint(IInventoryRepository repository) : Endpoint<Upda
 {
     public override void Configure()
     {
+        AllowAnonymous();
         Put("{id:guid}");
         Group<InventoryGroup>();
         Summary(s =>

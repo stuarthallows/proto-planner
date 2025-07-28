@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "@tanstack/react-router"
 import type { InventoryItem } from "../models/InventoryItem"
 import {
   Table,
@@ -21,7 +22,7 @@ function InventoryList() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch("api/inventory/inventory")
+      const response = await fetch("/api/inventory/inventory")
       
       if (!response.ok) {
         throw new Error(`Failed to fetch inventory: ${response.status}`)
@@ -108,17 +109,19 @@ function InventoryList() {
               {items.map((item) => {
                 const stockStatus = getStockStatus(item.quantity)
                 return (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono text-sm">
-                      {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
-                    </TableCell>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell className="text-right">{item.quantity}</TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusBadge(item.quantity)}`}>
-                        {stockStatus.text}
-                      </span>
-                    </TableCell>
+                  <TableRow key={item.id} className="cursor-pointer hover:bg-gray-50">
+                    <Link to="/inventory/$id" params={{ id: item.id }} className="contents">
+                      <TableCell className="font-mono text-sm">
+                        {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
+                      </TableCell>
+                      <TableCell className="font-medium">{item.name}</TableCell>
+                      <TableCell className="text-right">{item.quantity}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusBadge(item.quantity)}`}>
+                          {stockStatus.text}
+                        </span>
+                      </TableCell>
+                    </Link>
                   </TableRow>
                 )
               })}

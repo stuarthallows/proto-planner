@@ -73,6 +73,7 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [ ] Return errors as `ProblemDetails`
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
 - [ ] ShadCN MCP server
+- [ ] Component library with Storybook (expand to full design system and style guide?)
 - [ ] Deployment
 - [ ] Auditing
 - [ ] CI/CD, build and run stages
@@ -91,7 +92,6 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [ ] 🧪 BE unit testing (xUnit and Moq)
 - [ ] 🧪 BE integration testing (TestContainers)
 - [ ] 🧪 FE unit testing (React Testing Library)
-- [ ] 🧪 FE component testing (Storybook)
 - [ ] 🧪 FE E2E testing (Playwright)
 - [ ] 🧪 Aspire testing
 - [ ] 🧪 Load testing
