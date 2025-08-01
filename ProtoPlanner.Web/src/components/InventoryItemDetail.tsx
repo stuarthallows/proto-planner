@@ -105,7 +105,7 @@ function InventoryItemDetail() {
         <h1 className="text-2xl font-bold">📦 Inventory Item Details</h1>
       </div>
       
-      <div className="bg-white border rounded-lg p-6 max-w-2xl">
+      <div className="bg-white border rounded-lg p-6 max-w-2xl mx-auto">
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
