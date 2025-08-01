@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.3.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.4.0" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -14,13 +14,13 @@
     <ProjectReference Include="..\Module.Inventory.ApiService\Module.Inventory.ApiService.csproj" />
     <ProjectReference Include="..\Module.Inventory.MigrationService\Module.Inventory.MigrationService.csproj" />
     <ProjectReference Include="..\Module.Sales.ApiService\Module.Sales.ApiService.csproj" />
-    <ProjectReference Include="..\ProtoPlanner.ApiGateway\ProtoPlanner.ApiGateway.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.NodeJs" Version="9.3.1" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.3.1" />
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.0" />
+    <PackageReference Include="Aspire.Hosting.NodeJs" Version="9.4.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.4.0" />
+    <PackageReference Include="Aspire.Hosting.Yarp" Version="9.4.0-preview.1.25378.8" />
   </ItemGroup>
 
   <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">

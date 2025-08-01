@@ -1,3 +1,4 @@
+using Aspire.Hosting.Yarp.Transforms;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -58,11 +59,15 @@ var salesService = builder.AddProject<Module_Sales_ApiService>("salesservice")
         DisplayLocation = UrlDisplayLocation.DetailsOnly
     });
 
-var apiGateway = builder.AddProject<ProtoPlanner_ApiGateway>("apigateway")
-    .WithReference(inventoryService)
-    .WaitFor(inventoryService)
-    .WithReference(salesService)
-    .WaitFor(salesService);
+var apiGateway = builder.AddYarp("apigateway")
+    .WithConfiguration(yarpBuilder =>
+    {
+        yarpBuilder.AddRoute("/inventory/{**catch-all}", inventoryService)
+            .WithTransformPathRemovePrefix("/inventory");
+
+        yarpBuilder.AddRoute("/sales/{**catch-all}", salesService)
+            .WithTransformPathRemovePrefix("/sales");
+    });
 
 builder.AddNpmApp("webapp", "../ProtoPlanner.Web")
     .WithReference(apiGateway)

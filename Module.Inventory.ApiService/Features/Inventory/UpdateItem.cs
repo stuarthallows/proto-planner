@@ -43,10 +43,10 @@ public class UpdateItemEndpoint(IInventoryRepository repository) : Endpoint<Upda
         var updatedItem = await repository.UpdateItemAsync(req.Id, item, ct);
         if (updatedItem is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
         var response = new UpdateItemResponse { Id = updatedItem.Id, Name = updatedItem.Name, Quantity = updatedItem.Quantity };
-        await SendAsync(response, cancellation: ct);
+        await Send.OkAsync(response, ct);
     }
 }

@@ -46,7 +46,6 @@ public class GetItemsEndpoint(IInventoryRepository repository, ILogger<GetItemsE
 
         var responses = items.Select(Map.FromEntity).ToList();
 
-        await SendAsync(responses, cancellation: ct);
+        await Send.OkAsync(responses, ct);
     }
 }
-

@@ -30,10 +30,10 @@ public class GetItemEndpoint(IInventoryRepository repository) : EndpointWithoutR
         var item = await repository.GetItemByIdAsync(itemId, ct);
         if (item is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
         var response = new GetItemResponse { Id = item.Id, Name = item.Name, Quantity = item.Quantity };
-        await SendAsync(response, cancellation: ct);
+        await Send.OkAsync(response, ct);
     }
 }

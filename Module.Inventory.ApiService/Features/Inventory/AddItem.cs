@@ -55,6 +55,6 @@ public class AddItemEndpoint(IInventoryRepository repository) : Endpoint<AddItem
         var addedItem = await repository.AddItemAsync(item, ct);
 
         var response = new AddItemResponse { Id = addedItem.Id, Name = addedItem.Name, Quantity = addedItem.Quantity };
-        await SendAsync(response, 201, cancellation: ct);
+        await Send.OkAsync(response, ct);
     }
 }
