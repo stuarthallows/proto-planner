@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
-import { ArrowLeft, Edit2, Save, X, Plus } from "lucide-react"
+import { ArrowLeft, Edit2, Save, X, Plus, Trash2 } from "lucide-react"
 import type { InventoryItem } from "../models/InventoryItem"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,6 +17,7 @@ function InventoryItemDetail() {
   const [editedName, setEditedName] = useState<string>("")
   const [editedQuantity, setEditedQuantity] = useState<string>("")
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
   const fetchInventoryItem = async () => {
@@ -60,12 +61,28 @@ function InventoryItemDetail() {
     setSaveError(null)
   }
 
-  const generateGuid = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0
-      const v = c === 'x' ? r : (r & 0x3 | 0x8)
-      return v.toString(16)
-    })
+  const handleDelete = async () => {
+    if (!item || isAddMode) return
+
+    try {
+      setIsDeleting(true)
+      setSaveError(null)
+
+      const response = await fetch(`/api/inventory/inventory/${item.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete item: ${response.status}`)
+      }
+
+      // Navigate back to inventory list after successful deletion
+      navigate({ to: '/inventory' })
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to delete item")
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const handleSave = async () => {
@@ -87,14 +104,13 @@ function InventoryItemDetail() {
 
       if (isAddMode) {
         // Create new item
-        const newId = generateGuid()
         const response = await fetch('/api/inventory/inventory', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: newId,
+            id: crypto.randomUUID(),
             name: editedName.trim(),
             quantity: newQuantity
           })
@@ -281,50 +297,74 @@ function InventoryItemDetail() {
           </div>
 
           {/* Form Actions */}
-          <div className="pt-4 border-t border-gray-200 flex justify-end">
-            {!isEditing ? (
-              <Button onClick={handleEdit}>
-                <Edit2 className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
-            ) : (
-              <div className="flex gap-3">
+          <div className="pt-4 border-t border-gray-200 flex justify-between items-start">
+            {/* Left side - Delete button */}
+            <div>
+              {!isAddMode && item && (
                 <Button 
-                  onClick={handleSave} 
-                  disabled={isSaving}
+                  onClick={handleDelete}
+                  variant="destructive"
+                  disabled={isSaving || isDeleting}
+                  className="bg-red-600 hover:bg-red-700"
                 >
-                  {isSaving ? (
-                    <>{isAddMode ? "Creating..." : "Saving..."}</>
+                  {isDeleting ? (
+                    <>Deleting...</>
                   ) : (
                     <>
-                      {isAddMode ? (
-                        <>
-                          <Plus className="h-4 w-4 mr-2" />
-                          Create Item
-                        </>
-                      ) : (
-                        <>
-                          <Save className="h-4 w-4 mr-2" />
-                          Save Changes
-                        </>
-                      )}
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
                     </>
                   )}
                 </Button>
-                <Button 
-                  onClick={handleCancel} 
-                  variant="outline" 
-                  disabled={isSaving}
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
+              )}
+            </div>
+
+            {/* Right side - Edit/Save/Cancel buttons */}
+            <div>
+              {!isEditing ? (
+                <Button onClick={handleEdit}>
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Edit
                 </Button>
-              </div>
-            )}
-            {saveError && (
-              <p className="text-red-600 text-sm mt-2">{saveError}</p>
-            )}
+              ) : (
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={handleSave} 
+                    disabled={isSaving || isDeleting}
+                  >
+                    {isSaving ? (
+                      <>{isAddMode ? "Creating..." : "Saving..."}</>
+                    ) : (
+                      <>
+                        {isAddMode ? (
+                          <>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Create Item
+                          </>
+                        ) : (
+                          <>
+                            <Save className="h-4 w-4 mr-2" />
+                            Save Changes
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    onClick={handleCancel} 
+                    variant="outline" 
+                    disabled={isSaving || isDeleting}
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Cancel
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
+          {saveError && (
+            <p className="text-red-600 text-sm mt-2">{saveError}</p>
+          )}
         </div>
       </div>
     </div>

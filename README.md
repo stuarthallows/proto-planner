@@ -67,7 +67,8 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Security code scanning
 - [x] Return mock data with Mock Service Worker
 - [x] Reverse proxy to hide implementation services (YARP)
-- [ ] Full set of CRUD operations
+- [x] Full set of CRUD operations
+- [ ] Consider use of Axios library rather than native fetch
 - [ ] Tanstack Query
 - [ ] Form handling including validation
 - [ ] BE Error handling global exception handler
