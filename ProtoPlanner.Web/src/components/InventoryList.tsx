@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "@tanstack/react-router"
+import { Plus } from "lucide-react"
 import type { InventoryItem } from "../models/InventoryItem"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -85,9 +87,17 @@ function InventoryList() {
 
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">📦 Inventory</h1>
-        <p className="text-gray-600 mt-2">Total Items: {items.length}</p>
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">📦 Inventory</h1>
+          <p className="text-gray-600 mt-2">Total Items: {items.length}</p>
+        </div>
+        <Link to="/inventory/new">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Item
+          </Button>
+        </Link>
       </div>
       
       {items.length === 0 ? (

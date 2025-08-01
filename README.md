@@ -68,8 +68,10 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Return mock data with Mock Service Worker
 - [x] Reverse proxy to hide implementation services (YARP)
 - [ ] Full set of CRUD operations
+- [ ] Tanstack Query
 - [ ] Form handling including validation
 - [ ] BE Error handling global exception handler
+- [ ] Claude can iterate on UI implementation using Playwright
 - [ ] Return errors as `ProblemDetails`
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
 - [ ] ShadCN MCP server

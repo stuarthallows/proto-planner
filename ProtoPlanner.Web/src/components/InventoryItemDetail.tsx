@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react"
-import { Link, useParams } from "@tanstack/react-router"
-import { ArrowLeft, Edit2, Save } from "lucide-react"
+import { Link, useParams, useNavigate } from "@tanstack/react-router"
+import { ArrowLeft, Edit2, Save, X, Plus } from "lucide-react"
 import type { InventoryItem } from "../models/InventoryItem"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 function InventoryItemDetail() {
-  const { id } = useParams({ from: "/inventory/$id" })
+  const params = useParams({ strict: false })
+  const navigate = useNavigate()
+  const id = params.id as string | undefined
+  const isAddMode = id === "new" || !id
   const [item, setItem] = useState<InventoryItem | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!isAddMode)
   const [error, setError] = useState<string | null>(null)
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(isAddMode)
+  const [editedName, setEditedName] = useState<string>("")
   const [editedQuantity, setEditedQuantity] = useState<string>("")
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -35,19 +39,41 @@ function InventoryItemDetail() {
   }
 
   useEffect(() => {
-    fetchInventoryItem()
-  }, [id])
+    if (!isAddMode && id) {
+      fetchInventoryItem()
+    }
+  }, [id, isAddMode])
 
   const handleEdit = () => {
     if (item) {
+      setEditedName(item.name)
       setEditedQuantity(item.quantity.toString())
       setIsEditing(true)
       setSaveError(null)
     }
   }
 
+  const handleCancel = () => {
+    setIsEditing(false)
+    setEditedName("")
+    setEditedQuantity("")
+    setSaveError(null)
+  }
+
+  const generateGuid = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0
+      const v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
+  }
+
   const handleSave = async () => {
-    if (!item) return
+    // Validation
+    if (!editedName.trim()) {
+      setSaveError("Name is required")
+      return
+    }
 
     const newQuantity = parseInt(editedQuantity)
     if (isNaN(newQuantity) || newQuantity < 0) {
@@ -59,26 +85,54 @@ function InventoryItemDetail() {
       setIsSaving(true)
       setSaveError(null)
 
-      const response = await fetch(`/api/inventory/inventory/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: item.id,
-          name: item.name,
-          quantity: newQuantity
+      if (isAddMode) {
+        // Create new item
+        const newId = generateGuid()
+        const response = await fetch('/api/inventory/inventory', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: newId,
+            name: editedName.trim(),
+            quantity: newQuantity
+          })
         })
-      })
 
-      if (!response.ok) {
-        throw new Error(`Failed to update item: ${response.status}`)
+        if (!response.ok) {
+          throw new Error(`Failed to create item: ${response.status}`)
+        }
+
+        const createdItem = await response.json()
+        // Navigate to the detail view of the created item
+        navigate({ to: '/inventory/$id', params: { id: createdItem.id } })
+      } else {
+        // Update existing item
+        if (!item) return
+
+        const response = await fetch(`/api/inventory/inventory/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: item.id,
+            name: editedName.trim(),
+            quantity: newQuantity
+          })
+        })
+
+        if (!response.ok) {
+          throw new Error(`Failed to update item: ${response.status}`)
+        }
+
+        const updatedItem = await response.json()
+        setItem(updatedItem)
+        setIsEditing(false)
+        setEditedName("")
+        setEditedQuantity("")
       }
-
-      const updatedItem = await response.json()
-      setItem(updatedItem)
-      setIsEditing(false)
-      setEditedQuantity("")
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Failed to save changes")
     } finally {
@@ -126,7 +180,7 @@ function InventoryItemDetail() {
     )
   }
 
-  if (!item) {
+  if (!item && !isAddMode) {
     return (
       <div className="p-6">
         <div className="mb-6">
@@ -144,7 +198,7 @@ function InventoryItemDetail() {
     )
   }
 
-  const currentQuantity = isEditing ? parseInt(editedQuantity) || 0 : item.quantity
+  const currentQuantity = isEditing ? parseInt(editedQuantity) || 0 : (item?.quantity || 0)
   const stockStatus = getStockStatus(currentQuantity)
 
   return (
@@ -156,27 +210,42 @@ function InventoryItemDetail() {
             Back to Inventory
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">📦 Inventory Item Details</h1>
+        <h1 className="text-2xl font-bold">
+          {isAddMode ? "📦 Add New Inventory Item" : "📦 Inventory Item Details"}
+        </h1>
       </div>
       
       <div className="bg-white border rounded-lg p-6 max-w-2xl mx-auto">
         <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Item ID
-            </label>
-            <div className="font-mono text-sm bg-gray-50 p-3 rounded border">
-              {item.id}
+          {!isAddMode && item && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Item ID
+              </label>
+              <div className="font-mono text-sm bg-gray-50 p-3 rounded border">
+                {item.id}
+              </div>
             </div>
-          </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Name
             </label>
-            <div className="text-lg font-medium bg-gray-50 p-3 rounded border">
-              {item.name}
-            </div>
+            {!isEditing ? (
+              <div className="text-lg font-medium bg-gray-50 p-3 rounded border">
+                {item?.name || ""}
+              </div>
+            ) : (
+              <Input
+                type="text"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                className="text-lg font-medium"
+                disabled={isSaving}
+                placeholder="Enter item name"
+              />
+            )}
           </div>
 
           <div>
@@ -184,43 +253,19 @@ function InventoryItemDetail() {
               Quantity
             </label>
             {!isEditing ? (
-              <div className="flex items-center gap-3">
-                <div className="text-lg font-bold bg-gray-50 p-3 rounded border flex-1">
-                  {item.quantity}
-                </div>
-                <Button onClick={handleEdit} variant="outline" size="sm">
-                  <Edit2 className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
+              <div className="text-2xl font-bold bg-gray-50 p-3 rounded border">
+                {item?.quantity || 0}
               </div>
             ) : (
-              <div className="space-y-3">
-                <Input
-                  type="number"
-                  min="0"
-                  value={editedQuantity}
-                  onChange={(e) => setEditedQuantity(e.target.value)}
-                  className="text-2xl font-bold"
-                  disabled={isSaving}
-                />
-                <Button 
-                  onClick={handleSave} 
-                  disabled={isSaving}
-                  size="sm"
-                >
-                  {isSaving ? (
-                    <>Saving...</>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-1" />
-                      Save
-                    </>
-                  )}
-                </Button>
-                {saveError && (
-                  <p className="text-red-600 text-sm">{saveError}</p>
-                )}
-              </div>
+              <Input
+                type="number"
+                min="0"
+                value={editedQuantity}
+                onChange={(e) => setEditedQuantity(e.target.value)}
+                className="text-2xl font-bold"
+                disabled={isSaving}
+                placeholder="Enter quantity"
+              />
             )}
           </div>
 
@@ -233,6 +278,52 @@ function InventoryItemDetail() {
                 {stockStatus.text}
               </span>
             </div>
+          </div>
+
+          {/* Form Actions */}
+          <div className="pt-4 border-t border-gray-200 flex justify-end">
+            {!isEditing ? (
+              <Button onClick={handleEdit}>
+                <Edit2 className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+            ) : (
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handleSave} 
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>{isAddMode ? "Creating..." : "Saving..."}</>
+                  ) : (
+                    <>
+                      {isAddMode ? (
+                        <>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Item
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-2" />
+                          Save Changes
+                        </>
+                      )}
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  onClick={handleCancel} 
+                  variant="outline" 
+                  disabled={isSaving}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Cancel
+                </Button>
+              </div>
+            )}
+            {saveError && (
+              <p className="text-red-600 text-sm mt-2">{saveError}</p>
+            )}
           </div>
         </div>
       </div>
