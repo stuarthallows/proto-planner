@@ -422,3 +422,6 @@ dist-ssr
 *.sw?
 
 hook_handler.jsonl
+
+# Claude Code
+.claude/*.local.json

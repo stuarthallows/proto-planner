@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "@tanstack/react-router"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Edit2, Save } from "lucide-react"
 import type { InventoryItem } from "../models/InventoryItem"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 function InventoryItemDetail() {
   const { id } = useParams({ from: "/inventory/$id" })
   const [item, setItem] = useState<InventoryItem | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedQuantity, setEditedQuantity] = useState<string>("")
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const fetchInventoryItem = async () => {
     try {
@@ -32,6 +37,54 @@ function InventoryItemDetail() {
   useEffect(() => {
     fetchInventoryItem()
   }, [id])
+
+  const handleEdit = () => {
+    if (item) {
+      setEditedQuantity(item.quantity.toString())
+      setIsEditing(true)
+      setSaveError(null)
+    }
+  }
+
+  const handleSave = async () => {
+    if (!item) return
+
+    const newQuantity = parseInt(editedQuantity)
+    if (isNaN(newQuantity) || newQuantity < 0) {
+      setSaveError("Quantity must be a number greater than or equal to 0")
+      return
+    }
+
+    try {
+      setIsSaving(true)
+      setSaveError(null)
+
+      const response = await fetch(`/api/inventory/inventory/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: item.id,
+          name: item.name,
+          quantity: newQuantity
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to update item: ${response.status}`)
+      }
+
+      const updatedItem = await response.json()
+      setItem(updatedItem)
+      setIsEditing(false)
+      setEditedQuantity("")
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save changes")
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const getStockStatus = (quantity: number) => {
     if (quantity === 0) return { text: "Out of Stock", className: "bg-red-100 text-red-800" }
@@ -91,7 +144,8 @@ function InventoryItemDetail() {
     )
   }
 
-  const stockStatus = getStockStatus(item.quantity)
+  const currentQuantity = isEditing ? parseInt(editedQuantity) || 0 : item.quantity
+  const stockStatus = getStockStatus(currentQuantity)
 
   return (
     <div className="p-6">
@@ -129,9 +183,45 @@ function InventoryItemDetail() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Quantity
             </label>
-            <div className="text-2xl font-bold bg-gray-50 p-3 rounded border">
-              {item.quantity}
-            </div>
+            {!isEditing ? (
+              <div className="flex items-center gap-3">
+                <div className="text-lg font-bold bg-gray-50 p-3 rounded border flex-1">
+                  {item.quantity}
+                </div>
+                <Button onClick={handleEdit} variant="outline" size="sm">
+                  <Edit2 className="h-4 w-4 mr-1" />
+                  Edit
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <Input
+                  type="number"
+                  min="0"
+                  value={editedQuantity}
+                  onChange={(e) => setEditedQuantity(e.target.value)}
+                  className="text-2xl font-bold"
+                  disabled={isSaving}
+                />
+                <Button 
+                  onClick={handleSave} 
+                  disabled={isSaving}
+                  size="sm"
+                >
+                  {isSaving ? (
+                    <>Saving...</>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-1" />
+                      Save
+                    </>
+                  )}
+                </Button>
+                {saveError && (
+                  <p className="text-red-600 text-sm">{saveError}</p>
+                )}
+              </div>
+            )}
           </div>
 
           <div>

@@ -158,7 +158,9 @@ The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host an
 
 - In C# prefer `string.Empty` over `""`
 - Use shadcn components where appropriate on the Web project
+- Always add a newline at the end of new source files
 
 ## Rules
 - Act as a highly skilled engineer that writes highly performant, elegant code that is simple and idiomatic
 
+## Code Guidelines
