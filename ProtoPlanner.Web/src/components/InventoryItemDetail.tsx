@@ -1,49 +1,37 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Link, useParams, useNavigate } from "@tanstack/react-router"
 import { ArrowLeft, Edit2, Save, X, Plus, Trash2 } from "lucide-react"
-import type { InventoryItem } from "../models/InventoryItem"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { 
+  useInventoryItem, 
+  useCreateInventoryItem, 
+  useUpdateInventoryItem, 
+  useDeleteInventoryItem 
+} from "../hooks/useInventory"
 
 function InventoryItemDetail() {
   const params = useParams({ strict: false })
   const navigate = useNavigate()
   const id = params.id as string | undefined
   const isAddMode = id === "new" || !id
-  const [item, setItem] = useState<InventoryItem | null>(null)
-  const [loading, setLoading] = useState(!isAddMode)
-  const [error, setError] = useState<string | null>(null)
+  
+  // Query and mutations
+  const { data: item, isLoading: loading, error, refetch } = useInventoryItem(id || "")
+  const createMutation = useCreateInventoryItem()
+  const updateMutation = useUpdateInventoryItem()
+  const deleteMutation = useDeleteInventoryItem()
+  
+  // Component state
   const [isEditing, setIsEditing] = useState(isAddMode)
   const [editedName, setEditedName] = useState<string>("")
   const [editedQuantity, setEditedQuantity] = useState<string>("")
-  const [isSaving, setIsSaving] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  
+  // Computed states
+  const isSaving = createMutation.isPending || updateMutation.isPending
+  const isDeleting = deleteMutation.isPending
 
-  const fetchInventoryItem = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await fetch(`/api/inventory/inventory/${id}`)
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch inventory item: ${response.status}`)
-      }
-      
-      const itemData = await response.json()
-      setItem(itemData)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch inventory item")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (!isAddMode && id) {
-      fetchInventoryItem()
-    }
-  }, [id, isAddMode])
 
   const handleEdit = () => {
     if (item) {
@@ -64,25 +52,16 @@ function InventoryItemDetail() {
   const handleDelete = async () => {
     if (!item || isAddMode) return
 
-    try {
-      setIsDeleting(true)
-      setSaveError(null)
-
-      const response = await fetch(`/api/inventory/inventory/${item.id}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to delete item: ${response.status}`)
-      }
-
-      // Navigate back to inventory list after successful deletion
-      navigate({ to: '/inventory' })
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "Failed to delete item")
-    } finally {
-      setIsDeleting(false)
-    }
+    setSaveError(null)
+    
+    deleteMutation.mutate(item.id, {
+      onSuccess: () => {
+        navigate({ to: '/inventory' })
+      },
+      onError: (err) => {
+        setSaveError(err instanceof Error ? err.message : "Failed to delete item")
+      },
+    })
   }
 
   const handleSave = async () => {
@@ -98,61 +77,45 @@ function InventoryItemDetail() {
       return
     }
 
-    try {
-      setIsSaving(true)
-      setSaveError(null)
+    setSaveError(null)
 
-      if (isAddMode) {
-        // Create new item
-        const response = await fetch('/api/inventory/inventory', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+    if (isAddMode) {
+      // Create new item
+      createMutation.mutate(
+        {
+          name: editedName.trim(),
+          quantity: newQuantity,
+        },
+        {
+          onSuccess: (createdItem) => {
+            navigate({ to: '/inventory/$id', params: { id: createdItem.id } })
           },
-          body: JSON.stringify({
-            id: crypto.randomUUID(),
-            name: editedName.trim(),
-            quantity: newQuantity
-          })
-        })
-
-        if (!response.ok) {
-          throw new Error(`Failed to create item: ${response.status}`)
-        }
-
-        const createdItem = await response.json()
-        // Navigate to the detail view of the created item
-        navigate({ to: '/inventory/$id', params: { id: createdItem.id } })
-      } else {
-        // Update existing item
-        if (!item) return
-
-        const response = await fetch(`/api/inventory/inventory/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
+          onError: (err) => {
+            setSaveError(err instanceof Error ? err.message : "Failed to create item")
           },
-          body: JSON.stringify({
-            id: item.id,
-            name: editedName.trim(),
-            quantity: newQuantity
-          })
-        })
-
-        if (!response.ok) {
-          throw new Error(`Failed to update item: ${response.status}`)
         }
+      )
+    } else {
+      // Update existing item
+      if (!item) return
 
-        const updatedItem = await response.json()
-        setItem(updatedItem)
-        setIsEditing(false)
-        setEditedName("")
-        setEditedQuantity("")
-      }
-    } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "Failed to save changes")
-    } finally {
-      setIsSaving(false)
+      updateMutation.mutate(
+        {
+          id: item.id,
+          name: editedName.trim(),
+          quantity: newQuantity,
+        },
+        {
+          onSuccess: () => {
+            setIsEditing(false)
+            setEditedName("")
+            setEditedQuantity("")
+          },
+          onError: (err) => {
+            setSaveError(err instanceof Error ? err.message : "Failed to update item")
+          },
+        }
+      )
     }
   }
 
@@ -184,13 +147,10 @@ function InventoryItemDetail() {
           </Link>
         </div>
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Error: {error}</p>
-          <button 
-            onClick={fetchInventoryItem}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <p className="text-red-600 mb-4">Error: {error.message}</p>
+          <Button onClick={() => refetch()}>
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     )

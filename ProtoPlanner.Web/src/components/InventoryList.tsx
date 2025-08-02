@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react"
 import { Link } from "@tanstack/react-router"
 import { Plus } from "lucide-react"
-import type { InventoryItem } from "../models/InventoryItem"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -11,37 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useInventoryItems } from "../hooks/useInventory"
 
 /**
  * Inventory list component that displays and manages inventory items
  */
 function InventoryList() {
-  const [items, setItems] = useState<Array<InventoryItem>>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchInventoryItems = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await fetch("/api/inventory/inventory")
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch inventory: ${response.status}`)
-      }
-      
-      const itemsData = await response.json()
-      setItems(itemsData)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch inventory")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchInventoryItems()
-  }, [])
+  const { data: items = [], isLoading: loading, error, refetch } = useInventoryItems()
 
   const getStockStatus = (quantity: number) => {
     if (quantity === 0) return { text: "Out of Stock", className: "stock-out" }
@@ -63,13 +37,10 @@ function InventoryList() {
     return (
       <div className="p-6">
         <div className="text-center py-8">
-          <p className="text-red-600 mb-4">Error: {error}</p>
-          <button 
-            onClick={fetchInventoryItems}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
+          <p className="text-red-600 mb-4">Error: {error.message}</p>
+          <Button onClick={() => refetch()}>
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     )

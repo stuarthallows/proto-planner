@@ -68,8 +68,11 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Return mock data with Mock Service Worker
 - [x] Reverse proxy to hide implementation services (YARP)
 - [x] Full set of CRUD operations
+- [x] Tanstack Query
+
+    REVIEW API, and fix stuff
+
 - [ ] Consider use of Axios library rather than native fetch
-- [ ] Tanstack Query
 - [ ] Form handling including validation
 - [ ] BE Error handling global exception handler
 - [ ] Claude can iterate on UI implementation using Playwright

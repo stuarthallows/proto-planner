@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-import type { Order } from "../models/Order"
 import {
   Table,
   TableBody,
@@ -8,38 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { useOrders } from "../hooks/useOrders"
 
 /**
  * Orders list component that displays and manages customer orders
  */
 function OrdersList() {
-  const [orders, setOrders] = useState<Array<Order>>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await fetch("/api/sales/orders")
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch orders: ${response.status}`)
-      }
-      
-      const ordersData = await response.json()
-      setOrders(ordersData)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch orders")
-      console.error("Error fetching orders:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchOrders()
-  }, [])
+  const { data: orders = [], isLoading: loading, error, refetch } = useOrders()
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString()
@@ -70,14 +44,11 @@ function OrdersList() {
     return (
       <div className="p-8">
         <div className="text-red-600 mb-4">
-          <p>Error: {error}</p>
+          <p>Error: {error.message}</p>
         </div>
-        <button 
-          onClick={fetchOrders}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <Button onClick={() => refetch()}>
           Retry
-        </button>
+        </Button>
       </div>
     )
   }
