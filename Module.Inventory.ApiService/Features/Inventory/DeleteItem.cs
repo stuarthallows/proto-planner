@@ -3,12 +3,7 @@ using Module.Inventory.ApiService.Services;
 
 namespace Module.Inventory.ApiService.Features.Inventory;
 
-public class DeleteItemRequest
-{
-    public Guid Id { get; set; }
-}
-
-public class DeleteItemEndpoint(IInventoryRepository repository) : Endpoint<DeleteItemRequest>
+public class DeleteItemEndpoint(IInventoryRepository repository) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -21,9 +16,10 @@ public class DeleteItemEndpoint(IInventoryRepository repository) : Endpoint<Dele
         });
     }
 
-    public override async Task HandleAsync(DeleteItemRequest req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var deleted = await repository.DeleteItemAsync(req.Id, ct);
+        var itemId = Route<Guid>("id");
+        var deleted = await repository.DeleteItemAsync(itemId, ct);
         
         if (!deleted)
         {
