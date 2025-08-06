@@ -3,6 +3,7 @@ import { RootLayout } from './components/RootLayout'
 import { HomePage } from './components/HomePage'
 import InventoryList from './components/InventoryList'
 import InventoryItemDetail from './components/InventoryItemDetail'
+import InventoryItemForm from './components/InventoryItemForm'
 import { OrdersList } from './components/OrdersList'
 
 export const rootRoute = createRootRoute({
@@ -21,6 +22,12 @@ export const inventoryRoute = createRoute({
   component: InventoryList,
 })
 
+export const inventoryNewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/inventory/new',
+  component: InventoryItemForm,
+})
+
 export const inventoryItemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/inventory/$id',
@@ -36,6 +43,7 @@ export const ordersRoute = createRoute({
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   inventoryRoute,
+  inventoryNewRoute,
   inventoryItemRoute,
   ordersRoute,
 ])

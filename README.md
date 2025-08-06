@@ -69,9 +69,6 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Reverse proxy to hide implementation services (YARP)
 - [x] Full set of CRUD operations
 - [x] Tanstack Query
-
-    REVIEW API, and fix stuff
-
 - [ ] Consider use of Axios library rather than native fetch
 - [ ] Form handling including validation
 - [ ] BE Error handling global exception handler
@@ -83,11 +80,10 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [ ] Deployment
 - [ ] Auditing
 - [ ] CI/CD, build and run stages
-- [ ] Inter-service communication - HTTP/dapr
+- [ ] Inter-service communication
 - [ ] Secret management
 - [ ] API request idempotency
 - [ ] Abstract messaging implementation with Mass Transit
-- [ ] Consider dapr to abstract service layer
 - [ ] Configuration for dev/staging/production
 - [ ] Alerting on abnormal system behaviour
 - [ ] User authN and authZ
