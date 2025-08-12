@@ -70,8 +70,7 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Full set of CRUD operations
 - [x] Tanstack Query
 - [x] ShadCN MCP Server
-- [ ] Create Clause subagents
-    api-designer, data-scientist, performance-optimizer, code-reviewer, debugger, test-runner
+- [x] Create Clause subagents, consider also api-designer, performance-optimizer, test-runner
 - [ ] Create Claude slash commands
 - [ ] Support dark mode
 - [ ] Consider use of Axios library rather than native fetch
