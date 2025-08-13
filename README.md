@@ -71,8 +71,9 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Tanstack Query
 - [x] ShadCN MCP Server
 - [x] Create Clause subagents, consider also api-designer, performance-optimizer, test-runner
-- [ ] Create Claude slash commands
-- [ ] Support dark mode
+- [x] Support dark mode
+- [x] Create Claude slash commands
+- [ ] Too much code in App.css?
 - [ ] Consider use of Axios library rather than native fetch
 - [ ] Form handling including validation
 - [ ] BE Error handling global exception handler

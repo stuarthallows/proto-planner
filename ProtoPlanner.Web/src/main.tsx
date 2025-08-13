@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './index.css'
 import { routeTree } from './routeTree'
 import { queryClient } from './lib/queryClient'
+import { ThemeProvider } from './theme/theme-provider'
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== 'development') {
@@ -24,10 +25,12 @@ const router = createRouter({ routeTree })
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <ThemeProvider defaultTheme="light" storageKey="proto-planner-theme">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </ThemeProvider>
     </StrictMode>,
   )
 })
