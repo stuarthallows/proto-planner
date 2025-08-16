@@ -8,29 +8,15 @@ import { routeTree } from './routeTree'
 import { queryClient } from './lib/queryClient'
 import { ThemeProvider } from './theme/theme-provider'
 
-async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
-    return
-  }
-
-  const { worker } = await import('./mocks/browser')
-  
-  return worker.start({
-    onUnhandledRequest: 'bypass',
-  })
-}
-
 const router = createRouter({ routeTree })
 
-enableMocking().then(() => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <ThemeProvider defaultTheme="light" storageKey="proto-planner-theme">
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </ThemeProvider>
-    </StrictMode>,
-  )
-})
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <ThemeProvider defaultTheme="light" storageKey="proto-planner-theme">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
+  </StrictMode>,
+)

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,6 +32,7 @@ const getStockStatusBadge = (quantity: number) => {
  */
 function InventoryList() {
   const { data: items = [], isLoading: loading, error, refetch } = useInventoryItems()
+  const navigate = useNavigate()
 
   if (loading) {
     return (
@@ -90,19 +91,21 @@ function InventoryList() {
               {items.map((item) => {
                 const stockStatus = getStockStatus(item.quantity)
                 return (
-                  <TableRow key={item.id} className="cursor-pointer hover:bg-gray-50">
-                    <Link to="/inventory/$id" params={{ id: item.id }} className="contents">
-                      <TableCell className="font-mono text-sm">
-                        {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
-                      </TableCell>
-                      <TableCell className="font-medium">{item.name}</TableCell>
-                      <TableCell className="text-right">{item.quantity}</TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusBadge(item.quantity)}`}>
-                          {stockStatus.text}
-                        </span>
-                      </TableCell>
-                    </Link>
+                  <TableRow 
+                    key={item.id} 
+                    className="cursor-pointer hover:bg-gray-50"
+                    onClick={() => navigate({ to: "/inventory/$id", params: { id: item.id } })}
+                  >
+                    <TableCell className="font-mono text-sm">
+                      {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
+                    </TableCell>
+                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="text-right">{item.quantity}</TableCell>
+                    <TableCell>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStockStatusBadge(item.quantity)}`}>
+                        {stockStatus.text}
+                      </span>
+                    </TableCell>
                   </TableRow>
                 )
               })}

@@ -79,21 +79,23 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [ ] Form handling including validation
 - [ ] Show edit form in side panel
 - [ ] Component library with Storybook (expand to full design system and style guide?)
+- [ ] Deployment
+- [ ] CI/CD, build and run stages
+- [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
 - [ ] Return errors as `ProblemDetails`
 - [ ] BE Error handling global exception handler
 - [ ] Claude can iterate on UI implementation using Playwright
-- [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
-- [ ] Deployment
-- [ ] CI/CD, build and run stages
 - [ ] Auditing
 - [ ] Inter-service communication
+- [ ] Asynchronous intra-service messaging (RabbitMQ on-prem)
 - [ ] Secret management
 - [ ] API request idempotency
 - [ ] Abstract messaging implementation with Mass Transit
 - [ ] Configuration for dev/staging/production
 - [ ] User authN and authZ
 - [ ] Monitoring and alerting
-- [ ] Localisation
+- [ ] Client side localisation
+- [ ] Server side localisation
 - [ ] 🧪 Consider Dev Containers for testing
 - [ ] 🧪 BE unit testing (xUnit and Moq)
 - [ ] 🧪 BE integration testing (TestContainers)
@@ -105,10 +107,7 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [ ] ⛁ Automated database backups
 - [ ] ⛁ Database concurrency management
 - [ ] Real time communication (SignalR)
-- [ ] Asynchronous intra-service messaging (RabbitMQ on-prem)
 - [ ] Runtime health checks and liveness probes
-- [ ] Service auto scale out
-- [ ] Customer facing status page (e.g. Statuspage or Hund)
 - [ ] React module federation (see `create-tsrouter-app`)
 - [ ] Consider CQRS pattern
 - [ ] Consider event sourcing pattern

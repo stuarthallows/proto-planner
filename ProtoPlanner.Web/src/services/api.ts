@@ -2,7 +2,7 @@
 // Re-exports from individual API modules for backward compatibility
 
 // Shared API utilities
-export { type ProblemDetails, ApiError, apiRequest } from './api-client'
+export { type ProblemDetails, ApiError } from './api-client'
 
 // Domain-specific APIs
 export { inventoryApi } from './inventory-api'
