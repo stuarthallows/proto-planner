@@ -11,17 +11,27 @@ import {
 } from "@/components/ui/table"
 import { useInventoryItems } from "../hooks/useInventory"
 
+const getStockStatus = (quantity: number) => {
+  if (quantity === 0) return { text: "Out of Stock" }
+  if (quantity < 10) return { text: "Low Stock" }
+  return { text: "In Stock" }
+}
+
+const getStockStatusBadge = (quantity: number) => {
+  if (quantity === 0) {
+    return "bg-red-100 text-red-800"
+  }
+  if (quantity < 10) {
+    return "bg-yellow-100 text-yellow-800"
+  }
+  return "bg-green-100 text-green-800"
+}
+
 /**
  * Inventory list component that displays and manages inventory items
  */
 function InventoryList() {
   const { data: items = [], isLoading: loading, error, refetch } = useInventoryItems()
-
-  const getStockStatus = (quantity: number) => {
-    if (quantity === 0) return { text: "Out of Stock", className: "stock-out" }
-    if (quantity < 10) return { text: "Low Stock", className: "stock-low" }
-    return { text: "In Stock", className: "stock-good" }
-  }
 
   if (loading) {
     return (
@@ -44,16 +54,6 @@ function InventoryList() {
         </div>
       </div>
     )
-  }
-
-  const getStockStatusBadge = (quantity: number) => {
-    if (quantity === 0) {
-      return "bg-red-100 text-red-800"
-    }
-    if (quantity < 10) {
-      return "bg-yellow-100 text-yellow-800"
-    }
-    return "bg-green-100 text-green-800"
   }
 
   return (

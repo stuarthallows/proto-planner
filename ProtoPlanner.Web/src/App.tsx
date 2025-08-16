@@ -1,9 +1,8 @@
-import "./App.css"
 import { OrdersList } from "./components/OrdersList"
 
 function App() {
   return (
-    <div className="App">
+    <div className="min-h-screen">
       <OrdersList />
     </div>
   )

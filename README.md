@@ -73,26 +73,26 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Create Clause subagents, consider also api-designer, performance-optimizer, test-runner
 - [x] Support dark mode
 - [x] Create Claude slash commands
-- [ ] Too much code in App.css?
+- [x] Router - React Router or React Start
+- [x] Too much code in App.css?
 - [ ] Consider use of Axios library rather than native fetch
 - [ ] Form handling including validation
+- [ ] Show edit form in side panel
+- [ ] Component library with Storybook (expand to full design system and style guide?)
+- [ ] Return errors as `ProblemDetails`
 - [ ] BE Error handling global exception handler
 - [ ] Claude can iterate on UI implementation using Playwright
-- [ ] Return errors as `ProblemDetails`
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)
-- [ ] Component library with Storybook (expand to full design system and style guide?)
 - [ ] Deployment
-- [ ] Auditing
 - [ ] CI/CD, build and run stages
+- [ ] Auditing
 - [ ] Inter-service communication
 - [ ] Secret management
 - [ ] API request idempotency
 - [ ] Abstract messaging implementation with Mass Transit
 - [ ] Configuration for dev/staging/production
-- [ ] Alerting on abnormal system behaviour
 - [ ] User authN and authZ
 - [ ] Monitoring and alerting
-- [ ] Router - React Router or React Start
 - [ ] Localisation
 - [ ] 🧪 Consider Dev Containers for testing
 - [ ] 🧪 BE unit testing (xUnit and Moq)
