@@ -75,7 +75,7 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Create Claude slash commands
 - [x] Router - React Router or React Start
 - [x] Too much code in App.css?
-- [ ] Consider use of Axios library rather than native fetch
+- [x] Use Ky library rather than native fetch for simpler error handling
 - [ ] Form handling including validation
 - [ ] Show edit form in side panel
 - [ ] Component library with Storybook (expand to full design system and style guide?)

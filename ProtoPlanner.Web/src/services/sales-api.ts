@@ -1,7 +1,7 @@
 import type { Order } from '../models/Order'
-import { apiRequest } from './api-client'
+import { api } from './api-client'
 
 export const salesApi = {
   getOrders: () =>
-    apiRequest<Order[]>('/sales/orders'),
+    api.get('sales/orders').json<Order[]>(),
 }

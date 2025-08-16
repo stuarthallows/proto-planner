@@ -1,30 +1,26 @@
 import type { InventoryItem } from '../models/InventoryItem'
-import { apiRequest } from './api-client'
+import { api } from './api-client'
 
 export const inventoryApi = {
   getItems: () =>
-    apiRequest<InventoryItem[]>('/inventory/inventory'),
+    api.get('inventory/inventory').json<InventoryItem[]>(),
 
   getItem: (id: string) =>
-    apiRequest<InventoryItem>(`/inventory/inventory/${id}`),
+    api.get(`inventory/inventory/${id}`).json<InventoryItem>(),
 
   createItem: (item: Omit<InventoryItem, 'id'>) =>
-    apiRequest<InventoryItem>('/inventory/inventory', {
-      method: 'POST',
-      body: JSON.stringify({
+    api.post('inventory/inventory', {
+      json: {
         id: crypto.randomUUID(),
         ...item,
-      }),
-    }),
+      },
+    }).json<InventoryItem>(),
 
   updateItem: (id: string, item: Partial<InventoryItem>) =>
-    apiRequest<InventoryItem>(`/inventory/inventory/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ id, ...item }),
-    }),
+    api.put(`inventory/inventory/${id}`, {
+      json: { id, ...item },
+    }).json<InventoryItem>(),
 
   deleteItem: (id: string) =>
-    apiRequest<void>(`/inventory/inventory/${id}`, {
-      method: 'DELETE',
-    }),
+    api.delete(`inventory/inventory/${id}`).json<void>(),
 }
