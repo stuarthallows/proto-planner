@@ -45,7 +45,7 @@ export const api = ky.create({
   },
   hooks: {
     afterResponse: [
-      async (request, options, response) => {
+      async (_request, _options, response) => {
         // Convert Ky HTTPError to our custom ApiError for consistency
         if (!response.ok) {
           let problemDetails: ProblemDetails | undefined

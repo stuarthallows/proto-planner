@@ -76,9 +76,9 @@ What works surprisingly well in my workflow definition is to ask Claude to self 
 - [x] Router - React Router or React Start
 - [x] Too much code in App.css?
 - [x] Use Ky library rather than native fetch for simpler error handling
-- [ ] Form handling including validation
-- [ ] Show edit form in side panel
+- [x] Show edit form in side panel
 - [ ] Component library with Storybook (expand to full design system and style guide?)
+- [ ] Form handling including validation
 - [ ] Deployment
 - [ ] CI/CD, build and run stages
 - [ ] Infrastructure as code (Bicep vs Terraform vs Pulumi)

@@ -154,13 +154,11 @@ pnpm run preview
 
 The React frontend (ProtoPlanner.Web) is orchestrated by the .NET Aspire host and communicates with backend services through the API Gateway (ProtoPlanner.ApiGateway). The Aspire host automatically starts and manages the frontend alongside the backend services. The API Gateway provides a unified entry point, routing requests to the appropriate backend modules while maintaining service isolation. The frontend includes Docker configuration for deployment and uses modern React patterns with TypeScript for type safety.
 
-## Code Practices
-
-- In C# prefer `string.Empty` over `""`
-- Use shadcn components where appropriate on the Web project
-- Always add a newline at the end of new source files
-
 ## Rules
 - Act as a highly skilled engineer that writes highly performant, elegant code that is simple and idiomatic
 
 ## Code Guidelines
+- Used named exports from React component files, not default exports
+- Use shadcn components where appropriate on the Web project
+- In C# prefer `string.Empty` over `""`
+- Include a newline at the end of all source files

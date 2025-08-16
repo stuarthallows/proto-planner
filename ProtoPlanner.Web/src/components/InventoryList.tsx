@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useInventoryItems } from "../hooks/useInventory"
+import { InventoryEditPanel } from "./InventoryEditPanel"
 
 const getStockStatus = (quantity: number) => {
   if (quantity === 0) return { text: "Out of Stock" }
@@ -32,7 +33,26 @@ const getStockStatusBadge = (quantity: number) => {
  */
 function InventoryList() {
   const { data: items = [], isLoading: loading, error, refetch } = useInventoryItems()
-  const navigate = useNavigate()
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [selectedItemId, setSelectedItemId] = useState<string | undefined>(undefined)
+
+  const handleAddItem = () => {
+    setSelectedItemId(undefined)
+    setPanelOpen(true)
+  }
+
+  const handleEditItem = (itemId: string) => {
+    setSelectedItemId(itemId)
+    setPanelOpen(true)
+  }
+
+  const handleItemSaved = () => {
+    refetch()
+  }
+
+  const handleItemDeleted = () => {
+    refetch()
+  }
 
   if (loading) {
     return (
@@ -64,12 +84,10 @@ function InventoryList() {
           <h1 className="text-2xl font-bold">📦 Inventory</h1>
           <p className="text-gray-600 mt-2">Total Items: {items.length}</p>
         </div>
-        <Link to="/inventory/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Item
-          </Button>
-        </Link>
+        <Button onClick={handleAddItem}>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Item
+        </Button>
       </div>
       
       {items.length === 0 ? (
@@ -94,7 +112,7 @@ function InventoryList() {
                   <TableRow 
                     key={item.id} 
                     className="cursor-pointer hover:bg-gray-50"
-                    onClick={() => navigate({ to: "/inventory/$id", params: { id: item.id } })}
+                    onClick={() => handleEditItem(item.id)}
                   >
                     <TableCell className="font-mono text-sm">
                       {item.id.length > 8 ? `${item.id.substring(0, 8)}...` : item.id}
@@ -113,8 +131,16 @@ function InventoryList() {
           </Table>
         </div>
       )}
+
+      <InventoryEditPanel
+        open={panelOpen}
+        onOpenChange={setPanelOpen}
+        itemId={selectedItemId}
+        onItemSaved={handleItemSaved}
+        onItemDeleted={handleItemDeleted}
+      />
     </div>
   )
 }
 
-export default InventoryList
+export { InventoryList }
